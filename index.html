@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Чтобы приложение корректно отображалось на мобильных -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ЛОЛА — Салон красоты</title>
+  <meta name="description" content="Запись на процедуры в салон красоты ЛОЛА">
+  <!-- Иконка для вкладки браузера -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💅</text></svg>">
+  <!-- Чтобы можно было "установить" как приложение на телефон -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#a855f7">
+  <!-- Подключаем наши стили -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ============================================
+       АНИМИРОВАННЫЙ ФОН (цветные размытые пятна)
+       Они создают красивый фон для стеклянного эффекта
+       ============================================ -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- ============================================
+       СТРАНИЦА 1: ВХОД (ЛОГИН)
+       Пользователь вводит телефон и пароль
+       ============================================ -->
+  <div id="page-login" class="page auth-page active">
+    <div class="auth-card glass">
+      <!-- Долгое нажатие (3 сек) на логотип = скрытый вход для админа -->
+      <div class="auth-logo" id="admin-secret-logo">💅</div>
+      <h1 class="auth-title" data-i18n="salon_name">ЛОЛА</h1>
+      <p class="auth-subtitle" data-i18n="salon_slogan">Салон красоты</p>
+
+      <div class="input-group">
+        <label data-i18n="phone">Телефон</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+998</span>
+          <input type="tel" id="login-phone" class="phone-input" placeholder="90 123 45 67" maxlength="12" oninput="formatPhone(this)">
+        </div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="password">Пароль</label>
+        <input type="password" id="login-password" placeholder="••••••">
+      </div>
+
+      <button class="btn btn-primary mt-8" id="btn-login" data-i18n="login">Войти</button>
+
+      <div class="mt-16">
+        <button class="btn-link" id="btn-goto-register" data-i18n="no_account">Нет аккаунта? Регистрация</button>
+      </div>
+      <div>
+        <button class="btn-link" id="btn-goto-forgot" data-i18n="forgot_password">Забыли пароль?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       СТРАНИЦА 2: РЕГИСТРАЦИЯ
+       Новый пользователь вводит имя, телефон, пароль
+       ============================================ -->
+  <div id="page-register" class="page auth-page">
+    <div class="auth-card glass">
+      <div class="auth-logo">✨</div>
+      <h1 class="auth-title" data-i18n="registration">Регистрация</h1>
+      <p class="auth-subtitle" data-i18n="create_account">Создайте аккаунт</p>
+
+      <div class="input-group">
+        <label data-i18n="your_name">Ваше имя</label>
+        <input type="text" id="reg-name" placeholder="Анна">
+      </div>
+      <div class="input-group">
+        <label data-i18n="phone">Телефон</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+998</span>
+          <input type="tel" id="reg-phone" class="phone-input" placeholder="90 123 45 67" maxlength="12" oninput="formatPhone(this)">
+        </div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="password">Пароль</label>
+        <input type="password" id="reg-password" placeholder="Минимум 4 символа">
+      </div>
+
+      <button class="btn btn-primary mt-8" id="btn-register" data-i18n="register_btn">Зарегистрироваться</button>
+
+      <div class="mt-16">
+        <button class="btn-link" id="btn-goto-login" data-i18n="have_account">Уже есть аккаунт? Войти</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       СТРАНИЦА 3: ЗАБЫЛ ПАРОЛЬ
+       Восстановление пароля по номеру телефона
+       ============================================ -->
+  <div id="page-forgot" class="page auth-page">
+    <div class="auth-card glass">
+      <div class="auth-logo">🔑</div>
+      <h1 class="auth-title" data-i18n="reset_password">Сброс пароля</h1>
+      <p class="auth-subtitle" data-i18n="enter_phone_reset">Введите номер телефона для сброса</p>
+
+      <div class="input-group">
+        <label data-i18n="phone">Телефон</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+998</span>
+          <input type="tel" id="forgot-phone" class="phone-input" placeholder="90 123 45 67" maxlength="12" oninput="formatPhone(this)">
+        </div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="new_password">Новый пароль</label>
+        <input type="password" id="forgot-new-password" placeholder="Новый пароль">
+      </div>
+
+      <button class="btn btn-primary mt-8" id="btn-reset-password" data-i18n="reset_btn">Сбросить пароль</button>
+
+      <div class="mt-16">
+        <button class="btn-link" id="btn-forgot-back" data-i18n="back_to_login">Вернуться ко входу</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       ГЛАВНОЕ ПРИЛОЖЕНИЕ (после входа)
+       Содержит все основные страницы и нижнее меню
+       ============================================ -->
+  <div id="app-main" class="hidden">
+
+    <!-- ========== ГЛАВНАЯ: СПИСОК УСЛУГ ========== -->
+    <div id="page-home" class="page">
+      <div class="top-bar">
+        <div>
+          <div class="top-bar-title" data-i18n="services">Услуги</div>
+        </div>
+        <div id="home-user-greeting" style="font-size:14px;color:var(--text-2)"></div>
+      </div>
+      <div class="page-content">
+        <div id="services-grid" class="services-grid">
+          <!-- Сюда JavaScript вставит карточки услуг -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ДЕТАЛИ УСЛУГИ (для клиента — запись) ========== -->
+    <div id="page-service" class="page">
+      <div class="top-bar">
+        <button class="top-bar-back" id="service-back">←</button>
+        <div class="top-bar-title" id="service-title"></div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="page-content">
+        <div id="service-hero" class="service-hero glass"></div>
+        <div id="service-desc" class="service-description glass"></div>
+
+        <!-- Секция для клиента: свободные окошки -->
+        <div id="client-slots-section" class="slots-section">
+          <h3 data-i18n="available_slots">Свободные окошки</h3>
+          <div id="client-slots-list">
+            <!-- JavaScript заполнит слоты -->
+          </div>
+        </div>
+        <button class="btn btn-primary mt-16" id="btn-book" data-i18n="book_now"
+          style="display:none">Записаться</button>
+
+        <!-- Секция для админа: управление слотами -->
+        <div id="admin-slots-section" class="hidden">
+          <div id="admin-calendar" class="calendar glass"></div>
+          <div id="admin-day-slots" class="mt-16"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ВЛОГ: ЛЕНТА ПОСТОВ ========== -->
+    <div id="page-blog" class="page">
+      <div class="top-bar">
+        <div class="top-bar-title" data-i18n="blog">Влог</div>
+        <div></div>
+      </div>
+      <div class="page-content">
+        <div id="blog-feed" class="blog-feed">
+          <!-- JavaScript заполнит посты -->
+        </div>
+      </div>
+      <!-- Кнопка "+" для админа — добавить пост -->
+      <button class="fab hidden" id="fab-add-post">+</button>
+    </div>
+
+    <!-- ========== ДЕТАЛИ ПОСТА БЛОГА ========== -->
+    <div id="page-blog-detail" class="page">
+      <div class="top-bar">
+        <button class="top-bar-back" id="blog-detail-back">←</button>
+        <div class="top-bar-title" data-i18n="blog">Влог</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="page-content">
+        <div id="blog-detail-content"></div>
+        <button class="btn btn-primary mt-24" id="btn-blog-book" data-i18n="book_service">Записаться на
+          процедуру</button>
+      </div>
+    </div>
+
+    <!-- ========== НАСТРОЙКИ ========== -->
+    <div id="page-settings" class="page">
+      <div class="top-bar">
+        <div class="top-bar-title" data-i18n="settings">Настройки</div>
+        <div></div>
+      </div>
+      <div class="page-content">
+        <!-- Профиль пользователя -->
+        <div id="settings-profile" class="profile-header glass"></div>
+
+        <div class="settings-list">
+          <!-- Редактировать профиль -->
+          <div class="settings-item glass" id="btn-edit-profile">
+            <div class="settings-item-left">
+              <div class="settings-icon">👤</div>
+              <div>
+                <div class="settings-item-label" data-i18n="edit_profile">Редактировать профиль</div>
+              </div>
+            </div>
+            <div class="settings-arrow">›</div>
+          </div>
+
+          <!-- Мои записи (для клиентов) -->
+          <div class="settings-item glass" id="btn-my-bookings" onclick="showMyBookingsPage()">
+            <div class="settings-item-left">
+              <div class="settings-icon">📅</div>
+              <div>
+                <div class="settings-item-label" data-i18n="my_bookings">Мои записи</div>
+              </div>
+            </div>
+            <div class="settings-arrow">›</div>
+          </div>
+
+          <!-- Тёмная тема -->
+          <div class="settings-item glass" id="btn-toggle-theme">
+            <div class="settings-item-left">
+              <div class="settings-icon">🌙</div>
+              <div>
+                <div class="settings-item-label" data-i18n="dark_mode">Тёмный режим</div>
+              </div>
+            </div>
+            <div class="toggle-switch" id="theme-toggle"></div>
+          </div>
+
+          <!-- Язык -->
+          <div class="settings-item glass" id="btn-toggle-lang">
+            <div class="settings-item-left">
+              <div class="settings-icon">🌐</div>
+              <div>
+                <div class="settings-item-label" data-i18n="language">Язык</div>
+                <div class="settings-item-value" id="current-lang-label">Русский</div>
+              </div>
+            </div>
+            <div class="settings-arrow">›</div>
+          </div>
+
+          <!-- Выход -->
+          <div class="settings-item glass" id="btn-logout">
+            <div class="settings-item-left">
+              <div class="settings-icon">🚪</div>
+              <div>
+                <div class="settings-item-label" data-i18n="logout" style="color:var(--danger)">Выйти</div>
+              </div>
+            </div>
+            <div class="settings-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ========== -->
+    <div id="page-edit-profile" class="page">
+      <div class="top-bar">
+        <button class="top-bar-back" id="edit-profile-back">←</button>
+        <div class="top-bar-title" data-i18n="edit_profile">Редактировать профиль</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="page-content">
+        <div class="glass" style="padding:24px;margin-top:16px">
+          <div class="input-group">
+            <label data-i18n="your_name">Ваше имя</label>
+            <input type="text" id="edit-name">
+          </div>
+          <div class="input-group">
+            <label data-i18n="phone">Телефон</label>
+            <div class="phone-input-wrapper">
+              <span class="phone-prefix">+998</span>
+              <input type="tel" id="edit-phone" class="phone-input" placeholder="90 123 45 67" maxlength="12" oninput="formatPhone(this)">
+            </div>
+          </div>
+          <button class="btn btn-primary mt-8" id="btn-save-profile" data-i18n="save">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== МОИ ЗАПИСИ (ДЛЯ КЛИЕНТА) ========== -->
+    <div id="page-my-bookings" class="page">
+      <div class="top-bar">
+        <button class="top-bar-back" onclick="showPage('settings')">←</button>
+        <div class="top-bar-title" data-i18n="my_bookings">Мои записи</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="page-content" id="my-bookings-content">
+        <!-- Сюда JS загрузит список записей клиента -->
+      </div>
+    </div>
+
+    <!-- ========== НИЖНЕЕ МЕНЮ (3 кнопки) ========== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-item active" data-page="home" id="nav-home">
+        <span class="nav-icon">🏠</span>
+        <span data-i18n="nav_home">Главная</span>
+      </button>
+      <button class="nav-item" data-page="blog" id="nav-blog">
+        <span class="nav-icon">📝</span>
+        <span data-i18n="nav_blog">Влог</span>
+      </button>
+      <button class="nav-item" data-page="settings" id="nav-settings">
+        <span class="nav-icon">⚙️</span>
+        <span data-i18n="nav_settings">Настройки</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ============================================
+       МОДАЛЬНОЕ ОКНО (всплывающее окно)
+       Используется для разных форм: добавление слотов,
+       добавление поста, подтверждение записи и т.д.
+       ============================================ -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-content" class="modal-content glass">
+      <!-- JavaScript заполнит содержимое -->
+    </div>
+  </div>
+
+  <!-- Подключаем данные (переводы, услуги) -->
+  <script src="data.js"></script>
+  <!-- Подключаем нашу логику (JavaScript) -->
+  <script src="app.js"></script>
+
+</body>
+
+</html>
