@@ -69,11 +69,10 @@
 html,
 body {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
   /* Запрещаем скролл самой страницы, скроллится только .page-content */
-  position: fixed;
-  /* Для iOS, чтобы не было "резинового" скролла фона */
+  /* Убрали position: fixed, так как он может ломать скролл на мобильных */
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg-body);
   background-attachment: fixed;
@@ -166,7 +165,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   z-index: 1;
   flex-direction: column;
   animation: fadeIn 0.3s ease;
@@ -419,6 +418,7 @@ body {
 .page-content {
   flex: 1;
   width: 100%;
+  min-height: 0; /* Важно для скролла внутри flex-контейнера */
   overflow-y: auto;
   padding: 80px 20px 100px;
   /* Увеличен отступ сверху, чтобы контент не прятался под top-bar */
