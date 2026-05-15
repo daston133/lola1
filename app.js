@@ -131,7 +131,7 @@ function doLogin() {
 /* Скрытый вход для админа — вызывается долгим нажатием на логотип */
 function showAdminLoginModal() {
   showModal(`
-    <div class="modal-title">🔐 Вход для администратора</div>
+    <div class="modal-title"><i class="ph-light ph-lock-key"></i> Вход для администратора</div>
     <div class="input-group">
       <label>Логин</label>
       <input type="text" id="admin-login-input" placeholder="admin">
@@ -251,8 +251,8 @@ function openService(id) {
   const isAdmin = currentUser && currentUser.role === 'admin';
   const adminBtnsHtml = isAdmin ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn btn-secondary" style="flex:1;" onclick="showAddServiceModal(${id})">✏️ ${t('edit_service')}</button>
-      <button class="btn btn-danger" style="flex:1;" onclick="deleteService(${id})">🗑 ${t('delete')}</button>
+      <button class="btn btn-secondary" style="flex:1;" onclick="showAddServiceModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_service')}</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="deleteService(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>
   ` : '';
 
@@ -288,7 +288,7 @@ function showAddServiceModal(serviceId = null) {
   }
 
   showModal(`
-    <div class="modal-title">${serviceId ? '✏️ ' + t('edit_service') : '➕ ' + t('add_service')}</div>
+    <div class="modal-title">${serviceId ? '<i class="ph-light ph-pencil-simple"></i> ' + t('edit_service') : '<i class="ph-light ph-plus"></i> ' + t('add_service')}</div>
     <div class="input-group">
       <label>${t('service_icon')}</label>
       <input type="text" id="svc-icon" value="${svc.icon}">
@@ -372,7 +372,7 @@ function saveService() {
 function deleteService(id) {
   const msg = currentLang === 'ru' ? 'Точно удалить эту услугу?' : 'Ushbu xizmatni aniq o`chirmoqchimisiz?';
   showModal(`
-    <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
+    <div class="modal-title" style="text-align:center;"><i class="ph-light ph-trash" style="font-size:48px;"></i><br><br>${msg}</div>
     <div style="display:flex; gap:10px; margin-top:24px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="hideModal()">${t('cancel')}</button>
       <button class="btn btn-danger" style="flex:1;" onclick="confirmDeleteService(${id})">${t('delete')}</button>
@@ -402,7 +402,7 @@ function renderClientSlots(serviceId) {
   const container = document.getElementById('client-slots-list');
   const bookBtn = document.getElementById('btn-book');
   if (slots.length === 0) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">📅</span><p>${t('no_slots')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-calendar-blank"></i></span><p>${t('no_slots')}</p></div>`;
     bookBtn.style.display = 'none';
     return;
   }
@@ -414,7 +414,7 @@ function renderClientSlots(serviceId) {
     grouped[s.date].push(s);
   });
   if (Object.keys(grouped).length === 0) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">📅</span><p>${t('no_slots')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-calendar-blank"></i></span><p>${t('no_slots')}</p></div>`;
     bookBtn.style.display = 'none';
     return;
   }
@@ -426,7 +426,7 @@ function renderClientSlots(serviceId) {
         <div class="slots-date-group">
           <div class="slots-date-label">${formatDate(date)}</div>
           <div class="slots-list">
-            <span style="color:var(--danger); font-size:14px; font-weight:600; padding: 10px 0;">🚫 ${t('day_off')}</span>
+            <span style="color:var(--danger); font-size:14px; font-weight:600; padding: 10px 0;"><i class="ph-light ph-prohibit"></i> ${t('day_off')}</span>
           </div>
         </div>
       `;
@@ -568,7 +568,7 @@ function selectCalendarDate(date) {
 function renderAdminDaySlots() {
   const container = document.getElementById('admin-day-slots');
   if (!selectedDate) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">👆</span><p>${t('select_date')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-hand-pointing"></i></span><p>${t('select_date')}</p></div>`;
     return;
   }
   const slots = load('slots', []).filter(s => s.serviceId === currentServiceId && s.date === selectedDate);
@@ -576,7 +576,7 @@ function renderAdminDaySlots() {
   let html = `<div class="glass" style="padding:20px">
     <h3 style="margin-bottom:12px">${formatDate(selectedDate)}</h3>`;
   if (dayOff) {
-    html += `<p style="color:var(--danger);margin-bottom:12px">🚫 ${t('day_off')}</p>
+    html += `<p style="color:var(--danger);margin-bottom:12px"><i class="ph-light ph-prohibit"></i> ${t('day_off')}</p>
       <button class="btn btn-secondary btn-small" onclick="toggleDayOff()">${t('remove_day_off')}</button>`;
   } else {
     html += `<div class="slots-list" style="margin-bottom:16px">`;
@@ -584,7 +584,7 @@ function renderAdminDaySlots() {
     if (timeSlots.length > 0) {
       timeSlots.forEach(s => {
         const booked = s.isBooked ? ` (${s.bookedName || t('booked')})` : '';
-        html += `<div class="slot-chip${s.isBooked ? ' booked' : ''}">${s.time}${booked} ${!s.isBooked ? `<span onclick="removeSlot(${s.id})" style="cursor:pointer;margin-left:6px">✕</span>` : ''}</div>`;
+        html += `<div class="slot-chip${s.isBooked ? ' booked' : ''}">${s.time}${booked} ${!s.isBooked ? `<span onclick="removeSlot(${s.id})" style="cursor:pointer;margin-left:6px"><i class="ph-light ph-x"></i></span>` : ''}</div>`;
       });
     } else {
       html += `<p style="color:var(--text-2);font-size:13px">${t('no_slots')}</p>`;
@@ -656,10 +656,10 @@ function renderBlog() {
   const feed = document.getElementById('blog-feed');
 
   const addPostHtml = (currentUser && currentUser.role === 'admin') ?
-    `<button class="btn btn-primary" style="margin-bottom: 16px" onclick="showAddPostModal()">➕ ${t('add_post')}</button>` : '';
+    `<button class="btn btn-primary" style="margin-bottom: 16px" onclick="showAddPostModal()"><i class="ph-light ph-plus"></i> ${t('add_post')}</button>` : '';
 
   if (posts.length === 0) {
-    feed.innerHTML = addPostHtml + `<div class="empty-state"><span class="empty-icon">📝</span><p>${t('no_posts')}</p></div>`;
+    feed.innerHTML = addPostHtml + `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-note-pencil"></i></span><p>${t('no_posts')}</p></div>`;
     return;
   }
 
@@ -688,8 +688,8 @@ function openPost(id) {
   // Кнопка удаления и редактирования (только для админа)
   const adminBtnsHtml = (currentUser && currentUser.role === 'admin') ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn btn-secondary" style="flex:1;" onclick="showAddPostModal(${id})">✏️ ${t('edit_post')}</button>
-      <button class="btn btn-danger" style="flex:1;" onclick="deletePost(${id})">🗑 ${t('delete')}</button>
+      <button class="btn btn-secondary" style="flex:1;" onclick="showAddPostModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_post')}</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="deletePost(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>
   ` : '';
 
@@ -717,7 +717,7 @@ function deletePost(id) {
   const no = t('cancel');
 
   showModal(`
-    <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
+    <div class="modal-title" style="text-align:center;"><i class="ph-light ph-trash" style="font-size:48px;"></i><br><br>${msg}</div>
     <div style="display:flex; gap:10px; margin-top:24px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="hideModal()">${no}</button>
       <button class="btn btn-danger" style="flex:1;" onclick="confirmDeletePost(${id})">${yes}</button>
@@ -754,7 +754,7 @@ function showAddPostModal(postId = null) {
   const opts = services.map(s => `<option value="${s.id}" ${post.serviceId === s.id ? 'selected' : ''}>${t(s.nameKey)}</option>`).join('');
 
   showModal(`
-    <div class="modal-title">${postId ? '✏️ ' + t('edit_post') : '📝 ' + t('add_post')}</div>
+    <div class="modal-title">${postId ? '<i class="ph-light ph-pencil-simple"></i> ' + t('edit_post') : '<i class="ph-light ph-note-pencil"></i> ' + t('add_post')}</div>
     <div class="input-group">
       <label>${t('post_title')} (RU)</label>
       <input type="text" id="post-title-ru" value="${post.title_ru}">
