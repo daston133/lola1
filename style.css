@@ -15,7 +15,7 @@
   --accent-2: #ec4899;
   --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
   /* Фон — красивое фото зелёных листьев (как на вашем скриншоте) */
-  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover fixed no-repeat;
+  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover no-repeat;
 
   /* Эффект Liquid Glass */
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -40,7 +40,7 @@
 /* === ТЁМНАЯ ТЕМА === */
 [data-theme="dark"] {
   /* Убрали сильное затемнение, чтобы листья были видны */
-  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover fixed no-repeat;
+  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover no-repeat;
 
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.15);
@@ -75,7 +75,6 @@ body {
   /* Убрали position: fixed, так как он может ломать скролл на мобильных */
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg-body);
-  background-attachment: fixed;
   color: var(--text-1);
   -webkit-tap-highlight-color: transparent;
 }
@@ -418,8 +417,11 @@ body {
 .page-content {
   flex: 1;
   width: 100%;
-  min-height: 0; /* Важно для скролла внутри flex-контейнера */
+  min-height: 0;
+  /* Важно для скролла внутри flex-контейнера */
   overflow-y: auto;
+  overflow-x: hidden;
+  /* Запрещаем горизонтальный скролл */
   padding: 80px 20px 100px;
   /* Увеличен отступ сверху, чтобы контент не прятался под top-bar */
   -webkit-overflow-scrolling: touch;
