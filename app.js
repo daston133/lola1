@@ -207,14 +207,22 @@ function renderHome() {
   const services = load('services', []);
   const greeting = document.getElementById('home-user-greeting');
   if (greeting && currentUser) greeting.textContent = t('hello') + ', ' + currentUser.name + '!';
-  grid.innerHTML = services.map(s => `
+  
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const addHtml = isAdmin ? `<div class="service-add-card glass" onclick="showAddServiceModal()">
+    <span class="service-add-icon">➕</span>
+  </div>` : '';
+
+  grid.innerHTML = addHtml + services.map(s => {
+    const name = s.nameKey ? t(s.nameKey) : (s['name_'+currentLang] || s.name_ru || '');
+    return `
     <div class="service-card glass" onclick="openService(${s.id})">
       <span class="service-icon">${s.icon}</span>
-      <div class="service-name">${t(s.nameKey)}</div>
+      <div class="service-name">${name}</div>
       <div class="service-price">${s.price} сум</div>
       <div class="service-duration">${s.duration}</div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 // === ДЕТАЛИ УСЛУГИ ===
@@ -224,15 +232,27 @@ function openService(id) {
   const services = load('services', []);
   const svc = services.find(s => s.id === id);
   if (!svc) return;
-  document.getElementById('service-title').textContent = t(svc.nameKey);
+  const name = svc.nameKey ? t(svc.nameKey) : (svc['name_'+currentLang] || svc.name_ru || '');
+  const desc = svc.descKey ? t(svc.descKey) : (svc['desc_'+currentLang] || svc.desc_ru || '');
+  
+  document.getElementById('service-title').textContent = name;
   document.getElementById('service-hero').innerHTML = `
     <span class="service-icon">${svc.icon}</span>
-    <h2>${t(svc.nameKey)}</h2>
+    <h2>${name}</h2>
     <span class="price-tag">${svc.price} сум</span>
     <div class="service-duration" style="margin-top:8px">${svc.duration}</div>
   `;
-  document.getElementById('service-desc').textContent = t(svc.descKey);
+  
   const isAdmin = currentUser && currentUser.role === 'admin';
+  const adminBtnsHtml = isAdmin ? `
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="showAddServiceModal(${id})">✏️ ${t('edit_service')}</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="deleteService(${id})">🗑 ${t('delete')}</button>
+    </div>
+  ` : '';
+
+  document.getElementById('service-desc').innerHTML = desc.replace(/\n/g, '<br>') + adminBtnsHtml;
+  
   document.getElementById('client-slots-section').classList.toggle('hidden', isAdmin);
   document.getElementById('btn-book').style.display = isAdmin ? 'none' : 'none';
   document.getElementById('admin-slots-section').classList.toggle('hidden', !isAdmin);
@@ -243,6 +263,132 @@ function openService(id) {
     renderClientSlots(id);
   }
   showPage('service', true);
+}
+
+// === УПРАВЛЕНИЕ УСЛУГАМИ (АДМИН) ===
+let editingServiceId = null;
+
+function showAddServiceModal(serviceId = null) {
+  editingServiceId = serviceId;
+  const services = load('services', []);
+  let svc = { icon: '✨', name_ru: '', name_uz: '', desc_ru: '', desc_uz: '', price: '', duration: '' };
+  
+  if (serviceId) {
+    const existing = services.find(s => s.id === serviceId);
+    if (existing) {
+      svc = { ...existing };
+      if (svc.nameKey) { svc.name_ru = t(svc.nameKey); svc.name_uz = TRANSLATIONS[svc.nameKey].uz; }
+      if (svc.descKey) { svc.desc_ru = t(svc.descKey); svc.desc_uz = TRANSLATIONS[svc.descKey].uz; }
+    }
+  }
+
+  showModal(`
+    <div class="modal-title">${serviceId ? '✏️ ' + t('edit_service') : '➕ ' + t('add_service')}</div>
+    <div class="input-group">
+      <label>${t('service_icon')}</label>
+      <input type="text" id="svc-icon" value="${svc.icon}">
+    </div>
+    <div class="input-group">
+      <label>${t('service_name')} (RU)</label>
+      <input type="text" id="svc-name-ru" value="${svc.name_ru || ''}">
+    </div>
+    <div class="input-group">
+      <label>${t('service_name')} (UZ)</label>
+      <input type="text" id="svc-name-uz" value="${svc.name_uz || ''}">
+    </div>
+    <div class="input-group">
+      <label>${t('service_price')}</label>
+      <input type="text" id="svc-price" value="${svc.price}">
+    </div>
+    <div class="input-group">
+      <label>${t('service_duration')}</label>
+      <input type="text" id="svc-dur" value="${svc.duration}">
+    </div>
+    <div class="input-group">
+      <label>${t('service_desc')} (RU)</label>
+      <textarea id="svc-desc-ru">${svc.desc_ru || ''}</textarea>
+    </div>
+    <div class="input-group">
+      <label>${t('service_desc')} (UZ)</label>
+      <textarea id="svc-desc-uz">${svc.desc_uz || ''}</textarea>
+    </div>
+    <button class="btn btn-primary mt-16" onclick="saveService()">${t('save')}</button>
+    <button class="btn btn-secondary mt-8" onclick="hideModal()">${t('cancel')}</button>
+  `);
+}
+
+function saveService() {
+  const nameRu = document.getElementById('svc-name-ru').value.trim();
+  const price = document.getElementById('svc-price').value.trim();
+  if (!nameRu || !price) return toast(t('err_fill_all'), 'error');
+  
+  let services = load('services', []);
+  
+  if (editingServiceId) {
+    const idx = services.findIndex(s => s.id === editingServiceId);
+    if (idx !== -1) {
+      services[idx] = {
+        id: editingServiceId,
+        icon: document.getElementById('svc-icon').value.trim() || '✨',
+        name_ru: nameRu,
+        name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
+        desc_ru: document.getElementById('svc-desc-ru').value.trim(),
+        desc_uz: document.getElementById('svc-desc-uz').value.trim(),
+        price: price,
+        duration: document.getElementById('svc-dur').value.trim(),
+      };
+      toast(t('service_saved'));
+    }
+  } else {
+    services.push({
+      id: Date.now(),
+      icon: document.getElementById('svc-icon').value.trim() || '✨',
+      name_ru: nameRu,
+      name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
+      desc_ru: document.getElementById('svc-desc-ru').value.trim(),
+      desc_uz: document.getElementById('svc-desc-uz').value.trim(),
+      price: price,
+      duration: document.getElementById('svc-dur').value.trim(),
+    });
+    toast(t('service_saved'));
+  }
+  
+  store('services', services);
+  editingServiceId = null;
+  hideModal();
+  
+  if (currentServiceId && document.getElementById('page-service').classList.contains('active')) {
+    openService(currentServiceId);
+  } else {
+    renderHome();
+  }
+}
+
+function deleteService(id) {
+  const msg = currentLang === 'ru' ? 'Точно удалить эту услугу?' : 'Ushbu xizmatni aniq o`chirmoqchimisiz?';
+  showModal(`
+    <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
+    <div style="display:flex; gap:10px; margin-top:24px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="hideModal()">${t('cancel')}</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="confirmDeleteService(${id})">${t('delete')}</button>
+    </div>
+  `);
+}
+
+function confirmDeleteService(id) {
+  hideModal();
+  let services = load('services', []);
+  services = services.filter(s => s.id !== id);
+  store('services', services);
+  
+  // Also delete related slots
+  let slots = load('slots', []);
+  slots = slots.filter(s => s.serviceId !== id);
+  store('slots', slots);
+  
+  toast(t('service_deleted'));
+  showPage('home');
+  renderHome();
 }
 
 // === КЛИЕНТ: СВОБОДНЫЕ ОКОШКИ ===

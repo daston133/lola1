@@ -90,6 +90,17 @@ const TRANSLATIONS = {
   all_bookings:     { ru: "Все записи клиентов",           uz: "Barcha mijozlar yozilishlari" },
   no_bookings:      { ru: "Нет записей",                   uz: "Yozilishlar yo'q" },
 
+  // --- Управление услугами ---
+  add_service:      { ru: "Добавить услугу",               uz: "Xizmat qo'shish" },
+  edit_service:     { ru: "Редактировать услугу",          uz: "Xizmatni tahrirlash" },
+  service_icon:     { ru: "Иконка (эмодзи)",               uz: "Belgi (emoji)" },
+  service_name:     { ru: "Название",                      uz: "Nomi" },
+  service_desc:     { ru: "Описание",                      uz: "Tavsifi" },
+  service_price:    { ru: "Цена (например 100 000)",       uz: "Narxi (masalan 100 000)" },
+  service_duration: { ru: "Длительность (например 60 мин)",uz: "Davomiyligi (masalan 60 min)" },
+  service_saved:    { ru: "Услуга сохранена!",             uz: "Xizmat saqlandi!" },
+  service_deleted:  { ru: "Услуга удалена!",               uz: "Xizmat o'chirildi!" },
+
   // --- Ошибки ---
   err_fill_all:     { ru: "Заполните все поля",            uz: "Barcha maydonlarni to'ldiring" },
   err_short_pass:   { ru: "Пароль минимум 4 символа",      uz: "Parol kamida 4 belgi" },

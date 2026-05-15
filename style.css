@@ -506,6 +506,28 @@ body {
   transform: scale(0.97);
 }
 
+.service-add-card {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 4px;
+}
+
+.service-add-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.service-add-icon {
+  font-size: 32px;
+  color: var(--danger);
+  font-weight: 300;
+}
+
 .service-icon {
   font-size: 40px;
   margin-bottom: 10px;
