@@ -14,6 +14,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#a855f7">
+  <!-- Подключаем библиотеку Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <!-- Подключаем наши стили -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -37,7 +39,7 @@
   <div id="page-login" class="page auth-page active">
     <div class="auth-card glass">
       <!-- Долгое нажатие (3 сек) на логотип = скрытый вход для админа -->
-      <div class="auth-logo" id="admin-secret-logo">💅</div>
+      <div class="auth-logo" id="admin-secret-logo"><i class="ph-light ph-diamond"></i></div>
       <h1 class="auth-title" data-i18n="salon_name">ЛОЛА</h1>
       <p class="auth-subtitle" data-i18n="salon_slogan">Салон красоты</p>
 
@@ -70,7 +72,7 @@
        ============================================ -->
   <div id="page-register" class="page auth-page">
     <div class="auth-card glass">
-      <div class="auth-logo">✨</div>
+      <div class="auth-logo"><i class="ph-light ph-sparkle"></i></div>
       <h1 class="auth-title" data-i18n="registration">Регистрация</h1>
       <p class="auth-subtitle" data-i18n="create_account">Создайте аккаунт</p>
 
@@ -104,7 +106,7 @@
        ============================================ -->
   <div id="page-forgot" class="page auth-page">
     <div class="auth-card glass">
-      <div class="auth-logo">🔑</div>
+      <div class="auth-logo"><i class="ph-light ph-key"></i></div>
       <h1 class="auth-title" data-i18n="reset_password">Сброс пароля</h1>
       <p class="auth-subtitle" data-i18n="enter_phone_reset">Введите номер телефона для сброса</p>
 
@@ -152,7 +154,7 @@
     <!-- ========== ДЕТАЛИ УСЛУГИ (для клиента — запись) ========== -->
     <div id="page-service" class="page">
       <div class="top-bar">
-        <button class="top-bar-back" id="service-back">←</button>
+        <button class="top-bar-back" id="service-back"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" id="service-title"></div>
         <div style="width:40px"></div>
       </div>
@@ -196,7 +198,7 @@
     <!-- ========== ДЕТАЛИ ПОСТА БЛОГА ========== -->
     <div id="page-blog-detail" class="page">
       <div class="top-bar">
-        <button class="top-bar-back" id="blog-detail-back">←</button>
+        <button class="top-bar-back" id="blog-detail-back"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" data-i18n="blog">Влог</div>
         <div style="width:40px"></div>
       </div>
@@ -221,7 +223,7 @@
           <!-- Редактировать профиль -->
           <div class="settings-item glass" id="btn-edit-profile">
             <div class="settings-item-left">
-              <div class="settings-icon">👤</div>
+              <div class="settings-icon"><i class="ph-light ph-user"></i></div>
               <div>
                 <div class="settings-item-label" data-i18n="edit_profile">Редактировать профиль</div>
               </div>
@@ -232,7 +234,7 @@
           <!-- Мои записи (для клиентов) -->
           <div class="settings-item glass" id="btn-my-bookings" onclick="showMyBookingsPage()">
             <div class="settings-item-left">
-              <div class="settings-icon">📅</div>
+              <div class="settings-icon"><i class="ph-light ph-calendar"></i></div>
               <div>
                 <div class="settings-item-label" data-i18n="my_bookings">Мои записи</div>
               </div>
@@ -243,7 +245,7 @@
           <!-- Тёмная тема -->
           <div class="settings-item glass" id="btn-toggle-theme">
             <div class="settings-item-left">
-              <div class="settings-icon">🌙</div>
+              <div class="settings-icon"><i class="ph-light ph-moon"></i></div>
               <div>
                 <div class="settings-item-label" data-i18n="dark_mode">Тёмный режим</div>
               </div>
@@ -254,7 +256,7 @@
           <!-- Язык -->
           <div class="settings-item glass" id="btn-toggle-lang">
             <div class="settings-item-left">
-              <div class="settings-icon">🌐</div>
+              <div class="settings-icon"><i class="ph-light ph-globe"></i></div>
               <div>
                 <div class="settings-item-label" data-i18n="language">Язык</div>
                 <div class="settings-item-value" id="current-lang-label">Русский</div>
@@ -266,7 +268,7 @@
           <!-- Выход -->
           <div class="settings-item glass" id="btn-logout">
             <div class="settings-item-left">
-              <div class="settings-icon">🚪</div>
+              <div class="settings-icon"><i class="ph-light ph-sign-out"></i></div>
               <div>
                 <div class="settings-item-label" data-i18n="logout" style="color:var(--danger)">Выйти</div>
               </div>
@@ -280,7 +282,7 @@
     <!-- ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ========== -->
     <div id="page-edit-profile" class="page">
       <div class="top-bar">
-        <button class="top-bar-back" id="edit-profile-back">←</button>
+        <button class="top-bar-back" id="edit-profile-back"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" data-i18n="edit_profile">Редактировать профиль</div>
         <div style="width:40px"></div>
       </div>
@@ -305,7 +307,7 @@
     <!-- ========== МОИ ЗАПИСИ (ДЛЯ КЛИЕНТА) ========== -->
     <div id="page-my-bookings" class="page">
       <div class="top-bar">
-        <button class="top-bar-back" onclick="showPage('settings')">←</button>
+        <button class="top-bar-back" onclick="showPage('settings')"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" data-i18n="my_bookings">Мои записи</div>
         <div style="width:40px"></div>
       </div>
@@ -317,15 +319,15 @@
     <!-- ========== НИЖНЕЕ МЕНЮ (3 кнопки) ========== -->
     <nav class="bottom-nav" id="bottom-nav">
       <button class="nav-item active" data-page="home" id="nav-home">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon"><i class="ph-light ph-house"></i></span>
         <span data-i18n="nav_home">Главная</span>
       </button>
       <button class="nav-item" data-page="blog" id="nav-blog">
-        <span class="nav-icon">📝</span>
+        <span class="nav-icon"><i class="ph-light ph-article"></i></span>
         <span data-i18n="nav_blog">Влог</span>
       </button>
       <button class="nav-item" data-page="settings" id="nav-settings">
-        <span class="nav-icon">⚙️</span>
+        <span class="nav-icon"><i class="ph-light ph-gear"></i></span>
         <span data-i18n="nav_settings">Настройки</span>
       </button>
     </nav>

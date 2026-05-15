@@ -2,7 +2,7 @@
 
 // --- Работа с localStorage (память браузера) ---
 function store(key, val) { localStorage.setItem('lola_' + key, JSON.stringify(val)); }
-function load(key, def) { try { const v = localStorage.getItem('lola_' + key); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
+function load(key, def) { try { const v = localStorage.getItem('lola_' + key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
 
 // --- Текущие настройки ---
 let currentLang = load('lang', 'ru');
@@ -20,7 +20,12 @@ function initData() {
   if (!load('users', null)) {
     store('users', [{ id: 1, name: 'Админ', phone: 'admin', password: 'admin', role: 'admin' }]);
   }
-  if (!load('services', null)) store('services', DEFAULT_SERVICES);
+
+  const currentServices = load('services', null);
+  if (!currentServices || (currentServices.length > 0 && currentServices[0].icon === '💅')) {
+    store('services', DEFAULT_SERVICES);
+  }
+
   if (!load('slots', null)) store('slots', []);
   if (!load('posts', null)) store('posts', DEFAULT_BLOG_POSTS);
   if (!load('bookings', null)) store('bookings', []);
@@ -207,17 +212,17 @@ function renderHome() {
   const services = load('services', []);
   const greeting = document.getElementById('home-user-greeting');
   if (greeting && currentUser) greeting.textContent = t('hello') + ', ' + currentUser.name + '!';
-  
+
   const isAdmin = currentUser && currentUser.role === 'admin';
   const addHtml = isAdmin ? `<div class="service-add-card glass" onclick="showAddServiceModal()">
-    <span class="service-add-icon">➕</span>
+    <i class="ph-light ph-plus service-add-icon"></i>
   </div>` : '';
 
   grid.innerHTML = addHtml + services.map(s => {
-    const name = s.nameKey ? t(s.nameKey) : (s['name_'+currentLang] || s.name_ru || '');
+    const name = s.nameKey ? t(s.nameKey) : (s['name_' + currentLang] || s.name_ru || '');
     return `
     <div class="service-card glass" onclick="openService(${s.id})">
-      <span class="service-icon">${s.icon}</span>
+      <span class="service-icon"><i class="ph-light ${s.icon}"></i></span>
       <div class="service-name">${name}</div>
       <div class="service-price">${s.price} сум</div>
       <div class="service-duration">${s.duration}</div>
@@ -232,17 +237,17 @@ function openService(id) {
   const services = load('services', []);
   const svc = services.find(s => s.id === id);
   if (!svc) return;
-  const name = svc.nameKey ? t(svc.nameKey) : (svc['name_'+currentLang] || svc.name_ru || '');
-  const desc = svc.descKey ? t(svc.descKey) : (svc['desc_'+currentLang] || svc.desc_ru || '');
-  
+  const name = svc.nameKey ? t(svc.nameKey) : (svc['name_' + currentLang] || svc.name_ru || '');
+  const desc = svc.descKey ? t(svc.descKey) : (svc['desc_' + currentLang] || svc.desc_ru || '');
+
   document.getElementById('service-title').textContent = name;
   document.getElementById('service-hero').innerHTML = `
-    <span class="service-icon">${svc.icon}</span>
+    <span class="service-icon" style="font-size:64px;"><i class="ph-light ${svc.icon}"></i></span>
     <h2>${name}</h2>
     <span class="price-tag">${svc.price} сум</span>
     <div class="service-duration" style="margin-top:8px">${svc.duration}</div>
   `;
-  
+
   const isAdmin = currentUser && currentUser.role === 'admin';
   const adminBtnsHtml = isAdmin ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
@@ -252,7 +257,7 @@ function openService(id) {
   ` : '';
 
   document.getElementById('service-desc').innerHTML = desc.replace(/\n/g, '<br>') + adminBtnsHtml;
-  
+
   document.getElementById('client-slots-section').classList.toggle('hidden', isAdmin);
   document.getElementById('btn-book').style.display = isAdmin ? 'none' : 'none';
   document.getElementById('admin-slots-section').classList.toggle('hidden', !isAdmin);
@@ -271,8 +276,8 @@ let editingServiceId = null;
 function showAddServiceModal(serviceId = null) {
   editingServiceId = serviceId;
   const services = load('services', []);
-  let svc = { icon: '✨', name_ru: '', name_uz: '', desc_ru: '', desc_uz: '', price: '', duration: '' };
-  
+  let svc = { icon: 'ph-sparkle', name_ru: '', name_uz: '', desc_ru: '', desc_uz: '', price: '', duration: '' };
+
   if (serviceId) {
     const existing = services.find(s => s.id === serviceId);
     if (existing) {
@@ -321,15 +326,15 @@ function saveService() {
   const nameRu = document.getElementById('svc-name-ru').value.trim();
   const price = document.getElementById('svc-price').value.trim();
   if (!nameRu || !price) return toast(t('err_fill_all'), 'error');
-  
+
   let services = load('services', []);
-  
+
   if (editingServiceId) {
     const idx = services.findIndex(s => s.id === editingServiceId);
     if (idx !== -1) {
       services[idx] = {
         id: editingServiceId,
-        icon: document.getElementById('svc-icon').value.trim() || '✨',
+        icon: document.getElementById('svc-icon').value.trim() || 'ph-sparkle',
         name_ru: nameRu,
         name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
         desc_ru: document.getElementById('svc-desc-ru').value.trim(),
@@ -342,7 +347,7 @@ function saveService() {
   } else {
     services.push({
       id: Date.now(),
-      icon: document.getElementById('svc-icon').value.trim() || '✨',
+      icon: document.getElementById('svc-icon').value.trim() || 'ph-sparkle',
       name_ru: nameRu,
       name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
       desc_ru: document.getElementById('svc-desc-ru').value.trim(),
@@ -352,11 +357,11 @@ function saveService() {
     });
     toast(t('service_saved'));
   }
-  
+
   store('services', services);
   editingServiceId = null;
   hideModal();
-  
+
   if (currentServiceId && document.getElementById('page-service').classList.contains('active')) {
     openService(currentServiceId);
   } else {
@@ -380,12 +385,12 @@ function confirmDeleteService(id) {
   let services = load('services', []);
   services = services.filter(s => s.id !== id);
   store('services', services);
-  
+
   // Also delete related slots
   let slots = load('slots', []);
   slots = slots.filter(s => s.serviceId !== id);
   store('slots', slots);
-  
+
   toast(t('service_deleted'));
   showPage('home');
   renderHome();
@@ -404,7 +409,7 @@ function renderClientSlots(serviceId) {
   // Группируем по дате
   const grouped = {};
   const today = new Date().toISOString().split('T')[0];
-  slots.filter(s => s.date >= today).sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)).forEach(s => {
+  slots.filter(s => s.date >= today).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)).forEach(s => {
     if (!grouped[s.date]) grouped[s.date] = [];
     grouped[s.date].push(s);
   });
@@ -431,7 +436,7 @@ function renderClientSlots(serviceId) {
       <div class="slots-date-group">
         <div class="slots-date-label">${formatDate(date)}</div>
         <div class="slots-list">
-          ${dateSlots.map(s => `<button class="slot-chip${selectedSlotId===s.id?' selected':''}" onclick="selectSlot(${s.id})">${s.time}</button>`).join('')}
+          ${dateSlots.map(s => `<button class="slot-chip${selectedSlotId === s.id ? ' selected' : ''}" onclick="selectSlot(${s.id})">${s.time}</button>`).join('')}
         </div>
       </div>
     `;
@@ -474,24 +479,24 @@ function renderMyBookings() {
   const container = document.getElementById('my-bookings-content');
   const bookings = load('bookings', []).filter(b => b.userId === currentUser.id);
   const services = load('services', []);
-  
+
   if (bookings.length === 0) {
     container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: var(--text-2); font-size:16px;">${t('no_bookings')}</div>`;
     return;
   }
-  
+
   // Сортируем от ближайших записей к дальним
   bookings.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
+
   let html = '<div class="service-list">';
   bookings.forEach(b => {
     const svc = services.find(s => s.id === b.serviceId) || {};
     const name = svc.nameKey ? t(svc.nameKey) : (svc.name_ru || 'Услуга');
     const dateFormatted = formatDate(b.date);
-    
+
     html += `
       <div class="service-card glass">
-        <div class="service-icon">${svc.icon || '📅'}</div>
+        <div class="service-icon" style="font-size:32px;"><i class="ph-light ${svc.icon || 'ph-calendar'}"></i></div>
         <div class="service-info">
           <div class="service-name">${name}</div>
           <div class="service-desc" style="color:var(--text-1); font-weight:600; margin-top:4px;">${dateFormatted} — ${b.time}</div>
@@ -510,10 +515,10 @@ function renderMyBookings() {
 // === АДМИН: КАЛЕНДАРЬ ===
 function renderAdminCalendar() {
   const cal = document.getElementById('admin-calendar');
-  const monthNames_ru = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-  const monthNames_uz = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
-  const dayNames_ru = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-  const dayNames_uz = ['Du','Se','Ch','Pa','Ju','Sh','Ya'];
+  const monthNames_ru = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+  const monthNames_uz = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+  const dayNames_ru = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const dayNames_uz = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
   const mNames = currentLang === 'uz' ? monthNames_uz : monthNames_ru;
   const dNames = currentLang === 'uz' ? dayNames_uz : dayNames_ru;
   const firstDay = new Date(calendarYear, calendarMonth, 1);
@@ -525,7 +530,7 @@ function renderAdminCalendar() {
   let cells = dNames.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
   for (let i = 0; i < startDay; i++) cells += '<div class="calendar-day empty"></div>';
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateStr = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const hasSlots = slots.some(s => s.date === dateStr);
     const isDayOff = slots.some(s => s.date === dateStr && s.isDayOff);
     const isToday = dateStr === today;
@@ -579,7 +584,7 @@ function renderAdminDaySlots() {
     if (timeSlots.length > 0) {
       timeSlots.forEach(s => {
         const booked = s.isBooked ? ` (${s.bookedName || t('booked')})` : '';
-        html += `<div class="slot-chip${s.isBooked?' booked':''}">${s.time}${booked} ${!s.isBooked?`<span onclick="removeSlot(${s.id})" style="cursor:pointer;margin-left:6px">✕</span>`:''}</div>`;
+        html += `<div class="slot-chip${s.isBooked ? ' booked' : ''}">${s.time}${booked} ${!s.isBooked ? `<span onclick="removeSlot(${s.id})" style="cursor:pointer;margin-left:6px">✕</span>` : ''}</div>`;
       });
     } else {
       html += `<p style="color:var(--text-2);font-size:13px">${t('no_slots')}</p>`;
@@ -609,7 +614,7 @@ function showAddSlotModal() {
 function addSlot() {
   const timeInput = document.getElementById('new-slot-time');
   if (!timeInput || !timeInput.value) return toast(t('err_fill_all'), 'error');
-  
+
   // Проверка правильного формата времени (от 00:00 до 23:59)
   const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
   if (!timeRegex.test(timeInput.value.trim())) {
@@ -649,20 +654,20 @@ function toggleDayOff() {
 function renderBlog() {
   const posts = load('posts', []);
   const feed = document.getElementById('blog-feed');
-  
-  const addPostHtml = (currentUser && currentUser.role === 'admin') ? 
+
+  const addPostHtml = (currentUser && currentUser.role === 'admin') ?
     `<button class="btn btn-primary" style="margin-bottom: 16px" onclick="showAddPostModal()">➕ ${t('add_post')}</button>` : '';
 
   if (posts.length === 0) {
     feed.innerHTML = addPostHtml + `<div class="empty-state"><span class="empty-icon">📝</span><p>${t('no_posts')}</p></div>`;
     return;
   }
-  
-  feed.innerHTML = addPostHtml + posts.sort((a,b) => b.date.localeCompare(a.date)).map(p => {
-    const title = p.titleKey ? t(p.titleKey) : (p['title_'+currentLang] || p.title_ru || '');
-    const content = p['content_'+currentLang] || p.content_ru || '';
+
+  feed.innerHTML = addPostHtml + posts.sort((a, b) => b.date.localeCompare(a.date)).map(p => {
+    const title = p.titleKey ? t(p.titleKey) : (p['title_' + currentLang] || p.title_ru || '');
+    const content = p['content_' + currentLang] || p.content_ru || '';
     return `<div class="blog-card glass" onclick="openPost(${p.id})">
-      ${p.image ? `<img class="blog-card-img" src="${p.image}" alt="">` : `<div class="blog-card-img-placeholder">📸</div>`}
+      ${p.image ? `<img class="blog-card-img" src="${p.image}" alt="">` : `<div class="blog-card-img-placeholder"><i class="ph-light ph-camera"></i></div>`}
       <div class="blog-card-body">
         <div class="blog-card-title">${title}</div>
         <div class="blog-card-date">${formatDate(p.date)}</div>
@@ -677,9 +682,9 @@ function openPost(id) {
   const posts = load('posts', []);
   const post = posts.find(p => p.id === id);
   if (!post) return;
-  const title = post.titleKey ? t(post.titleKey) : (post['title_'+currentLang] || post.title_ru || '');
-  const content = post['content_'+currentLang] || post.content_ru || '';
-  
+  const title = post.titleKey ? t(post.titleKey) : (post['title_' + currentLang] || post.title_ru || '');
+  const content = post['content_' + currentLang] || post.content_ru || '';
+
   // Кнопка удаления и редактирования (только для админа)
   const adminBtnsHtml = (currentUser && currentUser.role === 'admin') ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
@@ -710,7 +715,7 @@ function deletePost(id) {
   const msg = currentLang === 'ru' ? 'Точно удалить этот пост?' : 'Ushbu postni aniq o`chirmoqchimisiz?';
   const yes = t('delete');
   const no = t('cancel');
-  
+
   showModal(`
     <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
     <div style="display:flex; gap:10px; margin-top:24px;">
@@ -737,7 +742,7 @@ function showAddPostModal(postId = null) {
   const services = load('services', []);
   const posts = load('posts', []);
   let post = { title_ru: '', title_uz: '', content_ru: '', content_uz: '', serviceId: '', image: '' };
-  
+
   if (postId) {
     const existing = posts.find(p => p.id === postId);
     if (existing) post = existing;
@@ -747,7 +752,7 @@ function showAddPostModal(postId = null) {
   }
 
   const opts = services.map(s => `<option value="${s.id}" ${post.serviceId === s.id ? 'selected' : ''}>${t(s.nameKey)}</option>`).join('');
-  
+
   showModal(`
     <div class="modal-title">${postId ? '✏️ ' + t('edit_post') : '📝 ' + t('add_post')}</div>
     <div class="input-group">
@@ -792,9 +797,9 @@ function publishPost() {
   const titleRu = document.getElementById('post-title-ru').value.trim();
   const contentRu = document.getElementById('post-content-ru').value.trim();
   if (!titleRu || !contentRu) return toast(t('err_fill_all'), 'error');
-  
+
   let posts = load('posts', []);
-  
+
   if (editingPostId) {
     const postIndex = posts.findIndex(p => p.id === editingPostId);
     if (postIndex !== -1) {
@@ -822,12 +827,12 @@ function publishPost() {
     });
     toast(t('post_published'));
   }
-  
+
   store('posts', posts);
   pendingPostImage = null;
   editingPostId = null;
   hideModal();
-  
+
   // Если мы редактировали пост и находились на странице этого поста, нужно обновить её тоже
   if (currentPostId === editingPostId) {
     openPost(currentPostId);
@@ -915,11 +920,11 @@ function setLanguage(lang) {
 
 // === УТИЛИТЫ ===
 function formatDate(dateStr) {
-  const months_ru = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-  const months_uz = ['yan','fev','mar','apr','may','iyn','iyl','avg','sen','okt','noy','dek'];
+  const months_ru = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+  const months_uz = ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek'];
   const months = currentLang === 'uz' ? months_uz : months_ru;
   const [y, m, d] = dateStr.split('-');
-  return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+  return `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}`;
 }
 
 // === ПРИВЯЗКА СОБЫТИЙ ===
@@ -953,7 +958,7 @@ function bindEvents() {
     };
   });
   // Enter на полях ввода
-  ['login-phone','login-password'].forEach(id => {
+  ['login-phone', 'login-password'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   });
 

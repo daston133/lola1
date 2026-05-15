@@ -203,8 +203,13 @@ body {
 }
 
 .auth-logo {
-  font-size: 48px;
+  font-size: 56px;
   margin-bottom: 8px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
 .auth-title {
@@ -467,17 +472,16 @@ body {
 }
 
 .nav-item .nav-icon {
-  font-size: 22px;
+  font-size: 24px;
   transition: transform 0.3s;
-}
-
-.nav-item.active {
-  color: var(--accent-1);
-  background: rgba(168, 85, 247, 0.1);
 }
 
 .nav-item.active .nav-icon {
   transform: scale(1.15);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* === СЕТКА УСЛУГ === */
@@ -529,9 +533,13 @@ body {
 }
 
 .service-icon {
-  font-size: 40px;
+  font-size: 44px;
   margin-bottom: 10px;
-  display: block;
+  display: inline-block;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .service-name {
@@ -762,7 +770,7 @@ body {
 }
 
 .settings-icon {
-  font-size: 22px;
+  font-size: 24px;
   width: 40px;
   height: 40px;
   display: flex;
@@ -770,6 +778,7 @@ body {
   justify-content: center;
   background: rgba(168, 85, 247, 0.1);
   border-radius: 12px;
+  color: var(--accent-1);
 }
 
 .settings-item-label {

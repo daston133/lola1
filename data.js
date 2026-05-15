@@ -136,14 +136,14 @@ const TRANSLATIONS = {
    (иконка, ключ названия, ключ описания, цена, длительность)
    ============================================ */
 const DEFAULT_SERVICES = [
-  { id: 1, icon: "💅", nameKey: "svc_manicure",  descKey: "desc_manicure",  price: "120 000", duration: "60 мин" },
-  { id: 2, icon: "🦶", nameKey: "svc_pedicure",  descKey: "desc_pedicure",  price: "150 000", duration: "90 мин" },
-  { id: 3, icon: "✂️", nameKey: "svc_haircut",   descKey: "desc_haircut",   price: "80 000",  duration: "45 мин" },
-  { id: 4, icon: "🎨", nameKey: "svc_coloring",  descKey: "desc_coloring",  price: "250 000", duration: "120 мин" },
-  { id: 5, icon: "🧖", nameKey: "svc_facial",    descKey: "desc_facial",    price: "180 000", duration: "60 мин" },
-  { id: 6, icon: "💆", nameKey: "svc_massage",   descKey: "desc_massage",   price: "200 000", duration: "90 мин" },
-  { id: 7, icon: "✨", nameKey: "svc_epilation", descKey: "desc_epilation", price: "100 000", duration: "45 мин" },
-  { id: 8, icon: "👁️", nameKey: "svc_brows",     descKey: "desc_brows",     price: "90 000",  duration: "40 мин" },
+  { id: 1, icon: "ph-sparkle", nameKey: "svc_manicure",  descKey: "desc_manicure",  price: "120 000", duration: "60 мин" },
+  { id: 2, icon: "ph-footprints", nameKey: "svc_pedicure",  descKey: "desc_pedicure",  price: "150 000", duration: "90 мин" },
+  { id: 3, icon: "ph-scissors", nameKey: "svc_haircut",   descKey: "desc_haircut",   price: "80 000",  duration: "45 мин" },
+  { id: 4, icon: "ph-drop", nameKey: "svc_coloring",  descKey: "desc_coloring",  price: "250 000", duration: "120 мин" },
+  { id: 5, icon: "ph-flower-lotus", nameKey: "svc_facial",    descKey: "desc_facial",    price: "180 000", duration: "60 мин" },
+  { id: 6, icon: "ph-hands-praying", nameKey: "svc_massage",   descKey: "desc_massage",   price: "200 000", duration: "90 мин" },
+  { id: 7, icon: "ph-magic-wand", nameKey: "svc_epilation", descKey: "desc_epilation", price: "100 000", duration: "45 мин" },
+  { id: 8, icon: "ph-eye", nameKey: "svc_brows",     descKey: "desc_brows",     price: "90 000",  duration: "40 мин" },
 ];
 
 /* ============================================
