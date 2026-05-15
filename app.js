@@ -131,7 +131,7 @@ function doLogin() {
 /* Скрытый вход для админа — вызывается долгим нажатием на логотип */
 function showAdminLoginModal() {
   showModal(`
-    <div class="modal-title">🔐 Вход для администратора</div>
+    <div class="modal-title"><i class="ph-light ph-lock-key" style="font-size:28px; margin-right:8px;"></i> Вход для администратора</div>
     <div class="input-group">
       <label>Логин</label>
       <input type="text" id="admin-login-input" placeholder="admin">
@@ -251,8 +251,8 @@ function openService(id) {
   const isAdmin = currentUser && currentUser.role === 'admin';
   const adminBtnsHtml = isAdmin ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn btn-secondary" style="flex:1;" onclick="showAddServiceModal(${id})">✏️ ${t('edit_service')}</button>
-      <button class="btn btn-danger" style="flex:1;" onclick="deleteService(${id})">🗑 ${t('delete')}</button>
+      <button class="btn btn-secondary btn-small" style="flex:1;" onclick="showAddServiceModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_service')}</button>
+      <button class="btn btn-danger btn-small" style="flex:1;" onclick="deleteService(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>
   ` : '';
 
@@ -287,11 +287,33 @@ function showAddServiceModal(serviceId = null) {
     }
   }
 
+  const iconsList = [
+    // Красота и уход
+    'ph-sparkle', 'ph-heart', 'ph-star', 'ph-crown', 'ph-diamond', 'ph-flower-lotus', 'ph-flower', 'ph-butterfly', 'ph-feather', 'ph-sun',
+    // Тело и спа
+    'ph-hands-praying', 'ph-hand-soap', 'ph-drop', 'ph-shower', 'ph-thermometer', 'ph-first-aid', 'ph-heartbeat', 'ph-smiley', 'ph-person', 'ph-gender-female',
+    // Инструменты и визаж
+    'ph-scissors', 'ph-paint-brush', 'ph-magic-wand', 'ph-palette', 'ph-pencil-simple', 'ph-pen-nib', 'ph-eye', 'ph-eyedropper', 'ph-flask', 'ph-test-tube',
+    // Движение и отдых
+    'ph-footprints', 'ph-wind', 'ph-leaf', 'ph-tree', 'ph-wave', 'ph-yin-yang', 'ph-infinity', 'ph-lightning', 'ph-flame', 'ph-moon',
+    // Атрибуты салона
+    'ph-clock', 'ph-calendar', 'ph-map-pin', 'ph-gift', 'ph-tag', 'ph-certificate', 'ph-trophy', 'ph-medal', 'ph-shield-check', 'ph-seal-check'
+  ];
+  
+  const iconsHtml = iconsList.map(icon => `
+    <div class="icon-picker-item ${svc.icon === icon ? 'active' : ''}" onclick="selectServiceIcon('${icon}', this)">
+      <i class="ph-light ${icon}"></i>
+    </div>
+  `).join('');
+
   showModal(`
-    <div class="modal-title">${serviceId ? '✏️ ' + t('edit_service') : '➕ ' + t('add_service')}</div>
+    <div class="modal-title">${serviceId ? '<i class="ph-light ph-pencil-simple"></i> ' + t('edit_service') : '<i class="ph-light ph-plus"></i> ' + t('add_service')}</div>
     <div class="input-group">
       <label>${t('service_icon')}</label>
-      <input type="text" id="svc-icon" value="${svc.icon}">
+      <input type="hidden" id="svc-icon-input" value="${svc.icon}">
+      <div class="icon-picker-grid">
+        ${iconsHtml}
+      </div>
     </div>
     <div class="input-group">
       <label>${t('service_name')} (RU)</label>
@@ -322,6 +344,12 @@ function showAddServiceModal(serviceId = null) {
   `);
 }
 
+function selectServiceIcon(iconName, element) {
+  document.getElementById('svc-icon-input').value = iconName;
+  document.querySelectorAll('.icon-picker-item').forEach(el => el.classList.remove('active'));
+  element.classList.add('active');
+}
+
 function saveService() {
   const nameRu = document.getElementById('svc-name-ru').value.trim();
   const price = document.getElementById('svc-price').value.trim();
@@ -334,7 +362,7 @@ function saveService() {
     if (idx !== -1) {
       services[idx] = {
         id: editingServiceId,
-        icon: document.getElementById('svc-icon').value.trim() || 'ph-sparkle',
+        icon: document.getElementById('svc-icon-input').value.trim() || 'ph-sparkle',
         name_ru: nameRu,
         name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
         desc_ru: document.getElementById('svc-desc-ru').value.trim(),
@@ -347,7 +375,7 @@ function saveService() {
   } else {
     services.push({
       id: Date.now(),
-      icon: document.getElementById('svc-icon').value.trim() || 'ph-sparkle',
+      icon: document.getElementById('svc-icon-input').value.trim() || 'ph-sparkle',
       name_ru: nameRu,
       name_uz: document.getElementById('svc-name-uz').value.trim() || nameRu,
       desc_ru: document.getElementById('svc-desc-ru').value.trim(),
@@ -372,7 +400,7 @@ function saveService() {
 function deleteService(id) {
   const msg = currentLang === 'ru' ? 'Точно удалить эту услугу?' : 'Ushbu xizmatni aniq o`chirmoqchimisiz?';
   showModal(`
-    <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
+    <div class="modal-title" style="text-align:center;"><i class="ph-light ph-trash" style="font-size: 48px; color: var(--danger); margin-bottom: 16px;"></i><br>${msg}</div>
     <div style="display:flex; gap:10px; margin-top:24px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="hideModal()">${t('cancel')}</button>
       <button class="btn btn-danger" style="flex:1;" onclick="confirmDeleteService(${id})">${t('delete')}</button>
@@ -402,7 +430,7 @@ function renderClientSlots(serviceId) {
   const container = document.getElementById('client-slots-list');
   const bookBtn = document.getElementById('btn-book');
   if (slots.length === 0) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">📅</span><p>${t('no_slots')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-calendar-x"></i></span><p>${t('no_slots')}</p></div>`;
     bookBtn.style.display = 'none';
     return;
   }
@@ -414,7 +442,7 @@ function renderClientSlots(serviceId) {
     grouped[s.date].push(s);
   });
   if (Object.keys(grouped).length === 0) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">📅</span><p>${t('no_slots')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-calendar-x"></i></span><p>${t('no_slots')}</p></div>`;
     bookBtn.style.display = 'none';
     return;
   }
@@ -568,7 +596,7 @@ function selectCalendarDate(date) {
 function renderAdminDaySlots() {
   const container = document.getElementById('admin-day-slots');
   if (!selectedDate) {
-    container.innerHTML = `<div class="empty-state"><span class="empty-icon">👆</span><p>${t('select_date')}</p></div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-calendar-blank"></i></span><p>${t('select_date')}</p></div>`;
     return;
   }
   const slots = load('slots', []).filter(s => s.serviceId === currentServiceId && s.date === selectedDate);
@@ -654,16 +682,20 @@ function toggleDayOff() {
 function renderBlog() {
   const posts = load('posts', []);
   const feed = document.getElementById('blog-feed');
+  const adminBtnSlot = document.getElementById('blog-admin-btn');
 
-  const addPostHtml = (currentUser && currentUser.role === 'admin') ?
-    `<button class="btn btn-primary" style="margin-bottom: 16px" onclick="showAddPostModal()">➕ ${t('add_post')}</button>` : '';
+  if (adminBtnSlot) {
+    adminBtnSlot.innerHTML = (currentUser && currentUser.role === 'admin')
+      ? `<button class="top-bar-back" onclick="showAddPostModal()"><i class="ph-light ph-plus"></i></button>`
+      : '';
+  }
 
   if (posts.length === 0) {
-    feed.innerHTML = addPostHtml + `<div class="empty-state"><span class="empty-icon">📝</span><p>${t('no_posts')}</p></div>`;
+    feed.innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="ph-light ph-note-pencil"></i></span><p>${t('no_posts')}</p></div>`;
     return;
   }
 
-  feed.innerHTML = addPostHtml + posts.sort((a, b) => b.date.localeCompare(a.date)).map(p => {
+  feed.innerHTML = posts.sort((a, b) => b.date.localeCompare(a.date)).map(p => {
     const title = p.titleKey ? t(p.titleKey) : (p['title_' + currentLang] || p.title_ru || '');
     const content = p['content_' + currentLang] || p.content_ru || '';
     return `<div class="blog-card glass" onclick="openPost(${p.id})">
@@ -688,8 +720,8 @@ function openPost(id) {
   // Кнопка удаления и редактирования (только для админа)
   const adminBtnsHtml = (currentUser && currentUser.role === 'admin') ? `
     <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn btn-secondary" style="flex:1;" onclick="showAddPostModal(${id})">✏️ ${t('edit_post')}</button>
-      <button class="btn btn-danger" style="flex:1;" onclick="deletePost(${id})">🗑 ${t('delete')}</button>
+      <button class="btn btn-secondary btn-small" style="flex:1;" onclick="showAddPostModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_post')}</button>
+      <button class="btn btn-danger btn-small" style="flex:1;" onclick="deletePost(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>
   ` : '';
 
@@ -717,7 +749,7 @@ function deletePost(id) {
   const no = t('cancel');
 
   showModal(`
-    <div class="modal-title" style="text-align:center;">🗑<br><br>${msg}</div>
+    <div class="modal-title" style="text-align:center;"><i class="ph-light ph-trash" style="font-size: 48px; color: var(--danger); margin-bottom: 16px;"></i><br>${msg}</div>
     <div style="display:flex; gap:10px; margin-top:24px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="hideModal()">${no}</button>
       <button class="btn btn-danger" style="flex:1;" onclick="confirmDeletePost(${id})">${yes}</button>
@@ -754,7 +786,7 @@ function showAddPostModal(postId = null) {
   const opts = services.map(s => `<option value="${s.id}" ${post.serviceId === s.id ? 'selected' : ''}>${t(s.nameKey)}</option>`).join('');
 
   showModal(`
-    <div class="modal-title">${postId ? '✏️ ' + t('edit_post') : '📝 ' + t('add_post')}</div>
+    <div class="modal-title">${postId ? '<i class="ph-light ph-pencil-simple"></i> ' + t('edit_post') : '<i class="ph-light ph-note-pencil"></i> ' + t('add_post')}</div>
     <div class="input-group">
       <label>${t('post_title')} (RU)</label>
       <input type="text" id="post-title-ru" value="${post.title_ru}">
