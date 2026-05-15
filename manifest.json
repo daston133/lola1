@@ -1,0 +1,16 @@
+{
+  "name": "ЛОЛА Салон красоты",
+  "short_name": "ЛОЛА",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#a855f7",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
