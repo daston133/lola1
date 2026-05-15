@@ -250,7 +250,7 @@ function openService(id) {
 
   const isAdmin = currentUser && currentUser.role === 'admin';
   const adminBtnsHtml = isAdmin ? `
-    <div style="display:flex; gap:10px; margin-top:20px;">
+    <div style="display:flex; gap:8px; margin-top:20px; width:100%; overflow:hidden;">
       <button class="btn btn-secondary btn-small" style="flex:1;" onclick="showAddServiceModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_service')}</button>
       <button class="btn btn-danger btn-small" style="flex:1;" onclick="deleteService(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>
@@ -632,7 +632,7 @@ function showAddSlotModal() {
     <div class="modal-title">${t('add_time_slot')}</div>
     <div class="input-group">
       <label>${t('time')}</label>
-      <input type="time" id="new-slot-time">
+      <input type="text" id="new-slot-time" placeholder="10:00" inputmode="numeric" maxlength="5">
     </div>
     <button class="btn btn-primary mt-16" onclick="addSlot()">${t('save')}</button>
     <button class="btn btn-secondary mt-8" onclick="hideModal()">${t('cancel')}</button>
@@ -719,7 +719,7 @@ function openPost(id) {
 
   // Кнопка удаления и редактирования (только для админа)
   const adminBtnsHtml = (currentUser && currentUser.role === 'admin') ? `
-    <div style="display:flex; gap:10px; margin-top:20px;">
+    <div style="display:flex; gap:8px; margin-top:20px; width:100%; overflow:hidden;">
       <button class="btn btn-secondary btn-small" style="flex:1;" onclick="showAddPostModal(${id})"><i class="ph-light ph-pencil-simple"></i> ${t('edit_post')}</button>
       <button class="btn btn-danger btn-small" style="flex:1;" onclick="deletePost(${id})"><i class="ph-light ph-trash"></i> ${t('delete')}</button>
     </div>

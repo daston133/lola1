@@ -3,8 +3,8 @@
   "short_name": "LOLA",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#a855f7",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "app-icon.png",
