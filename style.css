@@ -68,11 +68,12 @@
 
 html,
 body {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100dvh;
+  height: 100%;
   overflow: hidden;
-  /* Запрещаем скролл самой страницы, скроллится только .page-content */
-  /* Убрали position: fixed, так как он может ломать скролл на мобильных */
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--bg-body);
   color: var(--text-1);
@@ -160,11 +161,11 @@ body {
 /* === КОНТЕЙНЕР СТРАНИЦ === */
 .page {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100dvh;
+  right: 0;
+  bottom: 0;
   z-index: 1;
   flex-direction: column;
   animation: fadeIn 0.3s ease;
@@ -425,6 +426,8 @@ body {
   padding: 80px 20px 100px;
   /* Увеличен отступ сверху, чтобы контент не прятался под top-bar */
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  /* Предотвращает проблемы со скроллом на мобильных */
   position: relative;
 }
 
