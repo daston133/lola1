@@ -495,15 +495,24 @@ function selectSlot(id) {
 
 /* Показать системный выбор времени для слота */
 function showSystemTimePicker(slotTime) {
-  // Создаем скрытый input type="time" и эмулируем клик
+  // Создаем скрытый input type="time" с текущим временем и эмулируем клик
   const input = document.createElement('input');
   input.type = 'time';
-  input.value = slotTime.replace(/:/g, ':'); // Формат HH:MM
+  input.value = slotTime && slotTime.includes(':') ? slotTime : '10:00'; // Формат HH:MM
   input.style.display = 'none';
   document.body.appendChild(input);
+  
+  // Вызываем нативный системный picker
   input.click();
   
   input.onchange = () => {
+    // Время выбрано - можно использовать input.value
+    console.log('Выбранное время:', input.value);
+    document.body.removeChild(input);
+  };
+  
+  input.oncancel = () => {
+    // Пользователь отменил выбор времени
     document.body.removeChild(input);
   };
 }
@@ -662,25 +671,27 @@ function showAddSlotModal() {
     <div class="modal-title">${t('add_time_slot')}</div>
     <div class="input-group">
       <label>${t('time')}</label>
-      <input type="text" id="new-slot-time" placeholder="10:00" inputmode="numeric" maxlength="5" oninput="formatTimeInput(this)">
+      <input type="time" id="new-slot-time" required>
     </div>
     <button class="btn btn-primary mt-16" onclick="addSlot()">${t('save')}</button>
     <button class="btn btn-secondary mt-8" onclick="hideModal()">${t('cancel')}</button>
   `);
+  // Автоматически вызываем системный time picker
+  setTimeout(() => {
+    const timeInput = document.getElementById('new-slot-time');
+    if (timeInput) timeInput.click();
+  }, 100);
 }
 
 function addSlot() {
   const timeInput = document.getElementById('new-slot-time');
   if (!timeInput || !timeInput.value) return toast(t('err_fill_all'), 'error');
 
-  // Проверка правильного формата времени (от 00:00 до 23:59)
-  const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-  if (!timeRegex.test(timeInput.value.trim())) {
-    return toast(currentLang === 'ru' ? 'Неверный формат времени (HH:MM)' : 'Noto`g`ri vaqt formati (HH:MM)', 'error');
-  }
+  // type="time" уже обеспечивает правильный формат HH:MM
+  const timeValue = timeInput.value; // Это будет в формате HH:MM
 
   const slots = load('slots', []);
-  slots.push({ id: Date.now(), serviceId: currentServiceId, date: selectedDate, time: timeInput.value, isBooked: false, isDayOff: false });
+  slots.push({ id: Date.now(), serviceId: currentServiceId, date: selectedDate, time: timeValue, isBooked: false, isDayOff: false });
   store('slots', slots);
   hideModal();
   toast(t('slot_added'));

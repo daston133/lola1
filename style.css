@@ -15,7 +15,7 @@
   --accent-2: #ec4899;
   --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
   /* Фон — красивое фото зелёных листьев (как на вашем скриншоте) */
-  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover no-repeat;
+  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop');
 
   /* Эффект Liquid Glass */
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -40,7 +40,8 @@
 /* === ТЁМНАЯ ТЕМА === */
 [data-theme="dark"] {
   /* Сильное затемнение, чтобы тёмная тема действительно отличалась от светлой */
-  --bg-body: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop') center/cover no-repeat;
+  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop');
+  --bg-overlay: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85));
 
   --glass-bg: rgba(0, 0, 0, 0.4);
   --glass-border: rgba(255, 255, 255, 0.08);
@@ -99,11 +100,24 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  height: 100vh;
+  height: 100dvh;
   background: var(--bg-body);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-color: #000;
   z-index: -1;
+}
+
+/* Для темной темы добавляем оверлей */
+[data-theme="dark"] body::before {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), var(--bg-body);
 }
 
 /* === АНИМИРОВАННЫЙ ФОН (ЦВЕТНЫЕ ПЯТНА) ===
@@ -184,6 +198,20 @@ body::before {
   box-shadow: var(--glass-shadow);
 }
 
+/* === ГЛАВНЫЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ === */
+#app-main {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  z-index: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* === КОНТЕЙНЕР СТРАНИЦ === */
 .page {
   display: none;
@@ -192,6 +220,8 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
   flex-direction: column;
   animation: none;
