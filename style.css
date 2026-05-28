@@ -194,7 +194,8 @@ body::before {
   bottom: 0;
   z-index: 1;
   flex-direction: column;
-  animation: fadeIn 0.3s ease;
+  animation: none;
+  will-change: auto;
 }
 
 .page.active {
@@ -203,13 +204,13 @@ body::before {
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: 1;
+    transform: translateX(0) translateY(0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
   }
 }
 
@@ -489,12 +490,13 @@ body::before {
   overflow-y: auto;
   overflow-x: hidden;
   /* Запрещаем горизонтальный скролл */
-  padding: 80px 20px 100px;
-  /* Увеличен отступ сверху, чтобы контент не прятался под top-bar */
+  padding: 80px 20px 80px;
+  /* Уменьшен отступ снизу */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   /* Предотвращает проблемы со скроллом на мобильных */
   position: relative;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
 }
 
 /* === НИЖНЕЕ МЕНЮ (3 КНОПКИ) === */
@@ -505,7 +507,7 @@ body::before {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding: 12px 20px;
+  padding: 12px 20px 0 20px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -514,6 +516,8 @@ body::before {
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
   z-index: 100;
+  height: auto;
+  margin: 0;
 }
 
 .nav-item {
@@ -1152,10 +1156,12 @@ body::before {
 
 @keyframes slideUp {
   from {
-    transform: translateY(100%);
+    opacity: 1;
+    transform: translateY(0);
   }
 
   to {
+    opacity: 1;
     transform: translateY(0);
   }
 }

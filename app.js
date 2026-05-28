@@ -84,6 +84,19 @@ function getFullPhone(inputId) {
   return '+998' + raw;
 }
 
+/* Форматирование времени - только цифры, автоматическое двоеточие */
+function formatTimeInput(input) {
+  let value = input.value.replace(/\D/g, ''); // Удаляем всё кроме цифр
+  if (value.length > 4) value = value.slice(0, 4); // Максимум 4 цифры (HH:MM)
+  
+  // Автоматически добавляем двоеточие
+  if (value.length >= 2 && value.length <= 4) {
+    value = value.slice(0, 2) + ':' + value.slice(2);
+  }
+  
+  input.value = value;
+}
+
 /* Показать номер без +998 (для редактирования профиля) */
 function setPhoneInput(inputId, fullPhone) {
   const digits = fullPhone.replace(/\D/g, '').replace(/^998/, '');
@@ -261,6 +274,7 @@ function openService(id) {
   document.getElementById('client-slots-section').classList.toggle('hidden', isAdmin);
   document.getElementById('btn-book').style.display = isAdmin ? 'none' : 'none';
   document.getElementById('admin-slots-section').classList.toggle('hidden', !isAdmin);
+  document.getElementById('service-admin-btn').classList.toggle('hidden', !isAdmin);
   if (isAdmin) {
     selectedDate = null;
     renderAdminCalendar();
@@ -451,7 +465,7 @@ function renderClientSlots(serviceId) {
     const isDayOff = dateSlots.some(s => s.isDayOff);
     if (isDayOff) {
       return `
-        <div class="slots-date-group">
+        <div class="slots-date-group glass" style="padding: 12px; border-radius: 14px;">
           <div class="slots-date-label">${formatDate(date)}</div>
           <div class="slots-list">
             <span style="color:var(--danger); font-size:14px; font-weight:600; padding: 10px 0;">🚫 ${t('day_off')}</span>
@@ -461,10 +475,10 @@ function renderClientSlots(serviceId) {
     }
     // Иначе рендерим слоты времени
     return `
-      <div class="slots-date-group">
+      <div class="slots-date-group glass" style="padding: 12px; border-radius: 14px;">
         <div class="slots-date-label">${formatDate(date)}</div>
         <div class="slots-list">
-          ${dateSlots.map(s => `<button class="slot-chip${selectedSlotId === s.id ? ' selected' : ''}" onclick="selectSlot(${s.id})">${s.time}</button>`).join('')}
+          ${dateSlots.map(s => `<button class="slot-chip${selectedSlotId === s.id ? ' selected' : ''}" onclick="selectSlot(${s.id}); showSystemTimePicker('${s.time}')">${s.time}</button>`).join('')}
         </div>
       </div>
     `;
@@ -476,6 +490,21 @@ function renderClientSlots(serviceId) {
 function selectSlot(id) {
   selectedSlotId = id;
   renderClientSlots(currentServiceId);
+}
+
+/* Показать системный выбор времени для слота */
+function showSystemTimePicker(slotTime) {
+  // Создаем скрытый input type="time" и эмулируем клик
+  const input = document.createElement('input');
+  input.type = 'time';
+  input.value = slotTime.replace(/:/g, ':'); // Формат HH:MM
+  input.style.display = 'none';
+  document.body.appendChild(input);
+  input.click();
+  
+  input.onchange = () => {
+    document.body.removeChild(input);
+  };
 }
 
 function doBooking() {
@@ -632,7 +661,7 @@ function showAddSlotModal() {
     <div class="modal-title">${t('add_time_slot')}</div>
     <div class="input-group">
       <label>${t('time')}</label>
-      <input type="text" id="new-slot-time" placeholder="10:00" inputmode="numeric" maxlength="5">
+      <input type="text" id="new-slot-time" placeholder="10:00" inputmode="numeric" maxlength="5" oninput="formatTimeInput(this)">
     </div>
     <button class="btn btn-primary mt-16" onclick="addSlot()">${t('save')}</button>
     <button class="btn btn-secondary mt-8" onclick="hideModal()">${t('cancel')}</button>
@@ -685,9 +714,7 @@ function renderBlog() {
   const adminBtnSlot = document.getElementById('blog-admin-btn');
 
   if (adminBtnSlot) {
-    adminBtnSlot.innerHTML = (currentUser && currentUser.role === 'admin')
-      ? `<button class="top-bar-back" onclick="showAddPostModal()"><i class="ph-light ph-plus"></i></button>`
-      : '';
+    adminBtnSlot.classList.toggle('hidden', !(currentUser && currentUser.role === 'admin'));
   }
 
   if (posts.length === 0) {

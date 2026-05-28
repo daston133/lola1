@@ -156,7 +156,7 @@
       <div class="top-bar">
         <button class="top-bar-back" id="service-back"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" id="service-title"></div>
-        <div style="width:40px"></div>
+        <button class="top-bar-back hidden" id="service-admin-btn" onclick="showAddSlotModal()" style="background:none;border:none;color:var(--text-1);cursor:pointer;"><i class="ph-light ph-plus"></i></button>
       </div>
       <div class="page-content">
         <div id="service-hero" class="service-hero glass"></div>
@@ -184,15 +184,13 @@
     <div id="page-blog" class="page">
       <div class="top-bar">
         <div class="top-bar-title" data-i18n="blog">Влог</div>
-        <div id="blog-admin-btn"></div>
+        <button class="top-bar-back hidden" id="blog-admin-btn" onclick="showAddPostModal()" style="background:none;border:none;color:var(--text-1);cursor:pointer;"><i class="ph-light ph-plus"></i></button>
       </div>
       <div class="page-content">
         <div id="blog-feed" class="blog-feed">
           <!-- JavaScript заполнит посты -->
         </div>
       </div>
-      <!-- Кнопка "+" для админа — добавить пост -->
-      <button class="fab hidden" id="fab-add-post">+</button>
     </div>
 
     <!-- ========== ДЕТАЛИ ПОСТА БЛОГА ========== -->
