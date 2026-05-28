@@ -213,8 +213,9 @@ function doLogout() {
 function enterApp() {
   document.getElementById('app-main').classList.remove('hidden');
   const isAdmin = currentUser.role === 'admin';
-  document.getElementById('fab-add-post').classList.toggle('hidden', !isAdmin);
   renderHome();
+  renderBlog();
+  renderSettings();
   showPage('home');
   applyTranslations();
 }
@@ -1004,7 +1005,6 @@ function bindEvents() {
   document.getElementById('btn-toggle-theme').onclick = toggleTheme;
   document.getElementById('btn-toggle-lang').onclick = toggleLanguage;
   document.getElementById('btn-logout').onclick = doLogout;
-  document.getElementById('fab-add-post').onclick = showAddPostModal;
   document.getElementById('modal-overlay').onclick = e => { if (e.target.id === 'modal-overlay') hideModal(); };
   // Нижнее меню
   document.querySelectorAll('.nav-item').forEach(btn => {
