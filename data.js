@@ -97,7 +97,9 @@ const TRANSLATIONS = {
   service_name: { ru: "Название", uz: "Nomi" },
   service_desc: { ru: "Описание", uz: "Tavsifi" },
   service_price: { ru: "Цена (например 100 000)", uz: "Narxi (masalan 100 000)" },
+  service_price_suffix: { ru: "сум", uz: "sum" },
   service_duration: { ru: "Длительность (например 60 мин)", uz: "Davomiyligi (masalan 60 min)" },
+  service_duration_suffix: { ru: "мин", uz: "min" },
   service_saved: { ru: "Услуга сохранена!", uz: "Xizmat saqlandi!" },
   service_deleted: { ru: "Услуга удалена!", uz: "Xizmat o'chirildi!" },
 

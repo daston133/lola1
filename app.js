@@ -97,6 +97,24 @@ function formatTimeInput(input) {
   input.value = value;
 }
 
+function formatDigitsInput(input) {
+  input.value = input.value.replace(/\D/g, '');
+}
+
+function normalizeDigits(value) {
+  return String(value || '').replace(/\D/g, '');
+}
+
+function formatPrice(value) {
+  const digits = normalizeDigits(value);
+  return digits ? digits + ' ' + t('service_price_suffix') : '';
+}
+
+function formatDuration(value) {
+  const digits = normalizeDigits(value);
+  return digits ? digits + ' ' + t('service_duration_suffix') : '';
+}
+
 /* Показать номер без +998 (для редактирования профиля) */
 function setPhoneInput(inputId, fullPhone) {
   const digits = fullPhone.replace(/\D/g, '').replace(/^998/, '');
@@ -228,18 +246,17 @@ function renderHome() {
   if (greeting && currentUser) greeting.textContent = t('hello') + ', ' + currentUser.name + '!';
 
   const isAdmin = currentUser && currentUser.role === 'admin';
-  const addHtml = isAdmin ? `<div class="service-add-card glass" onclick="showAddServiceModal()">
-    <i class="ph-light ph-plus service-add-icon"></i>
-  </div>` : '';
+  const adminBtn = document.getElementById('home-admin-add-btn');
+  if (adminBtn) adminBtn.classList.toggle('hidden', !isAdmin);
 
-  grid.innerHTML = addHtml + services.map(s => {
+  grid.innerHTML = services.map(s => {
     const name = s.nameKey ? t(s.nameKey) : (s['name_' + currentLang] || s.name_ru || '');
     return `
     <div class="service-card glass" onclick="openService(${s.id})">
       <span class="service-icon"><i class="ph-light ${s.icon}"></i></span>
       <div class="service-name">${name}</div>
-      <div class="service-price">${s.price} сум</div>
-      <div class="service-duration">${s.duration}</div>
+      <div class="service-price">${formatPrice(s.price)}</div>
+      <div class="service-duration">${formatDuration(s.duration)}</div>
     </div>
   `}).join('');
 }
@@ -258,8 +275,8 @@ function openService(id) {
   document.getElementById('service-hero').innerHTML = `
     <span class="service-icon" style="font-size:64px;"><i class="ph-light ${svc.icon}"></i></span>
     <h2>${name}</h2>
-    <span class="price-tag">${svc.price} сум</span>
-    <div class="service-duration" style="margin-top:8px">${svc.duration}</div>
+    <span class="price-tag">${formatPrice(svc.price)}</span>
+    <div class="service-duration" style="margin-top:8px">${formatDuration(svc.duration)}</div>
   `;
 
   const isAdmin = currentUser && currentUser.role === 'admin';
@@ -273,9 +290,8 @@ function openService(id) {
   document.getElementById('service-desc').innerHTML = desc.replace(/\n/g, '<br>') + adminBtnsHtml;
 
   document.getElementById('client-slots-section').classList.toggle('hidden', isAdmin);
-  document.getElementById('btn-book').style.display = isAdmin ? 'none' : 'none';
+  document.getElementById('btn-book').style.display = isAdmin ? 'none' : 'block';
   document.getElementById('admin-slots-section').classList.toggle('hidden', !isAdmin);
-  document.getElementById('service-admin-btn').classList.toggle('hidden', !isAdmin);
   if (isAdmin) {
     selectedDate = null;
     renderAdminCalendar();
@@ -340,11 +356,17 @@ function showAddServiceModal(serviceId = null) {
     </div>
     <div class="input-group">
       <label>${t('service_price')}</label>
-      <input type="text" id="svc-price" value="${svc.price}">
+      <div class="input-with-suffix">
+        <input type="text" id="svc-price" inputmode="numeric" pattern="[0-9]*" oninput="formatDigitsInput(this)" value="${normalizeDigits(svc.price)}">
+        <span class="input-suffix">${t('service_price_suffix')}</span>
+      </div>
     </div>
     <div class="input-group">
       <label>${t('service_duration')}</label>
-      <input type="text" id="svc-dur" value="${svc.duration}">
+      <div class="input-with-suffix">
+        <input type="text" id="svc-dur" inputmode="numeric" pattern="[0-9]*" oninput="formatDigitsInput(this)" value="${normalizeDigits(svc.duration)}">
+        <span class="input-suffix">${t('service_duration_suffix')}</span>
+      </div>
     </div>
     <div class="input-group">
       <label>${t('service_desc')} (RU)</label>
@@ -367,8 +389,9 @@ function selectServiceIcon(iconName, element) {
 
 function saveService() {
   const nameRu = document.getElementById('svc-name-ru').value.trim();
-  const price = document.getElementById('svc-price').value.trim();
-  if (!nameRu || !price) return toast(t('err_fill_all'), 'error');
+  const price = normalizeDigits(document.getElementById('svc-price').value.trim());
+  const duration = normalizeDigits(document.getElementById('svc-dur').value.trim());
+  if (!nameRu || !price || !duration) return toast(t('err_fill_all'), 'error');
 
   let services = load('services', []);
 
@@ -383,7 +406,7 @@ function saveService() {
         desc_ru: document.getElementById('svc-desc-ru').value.trim(),
         desc_uz: document.getElementById('svc-desc-uz').value.trim(),
         price: price,
-        duration: document.getElementById('svc-dur').value.trim(),
+        duration: duration,
       };
       toast(t('service_saved'));
     }
@@ -396,7 +419,7 @@ function saveService() {
       desc_ru: document.getElementById('svc-desc-ru').value.trim(),
       desc_uz: document.getElementById('svc-desc-uz').value.trim(),
       price: price,
-      duration: document.getElementById('svc-dur').value.trim(),
+      duration: duration,
     });
     toast(t('service_saved'));
   }
@@ -469,7 +492,7 @@ function renderClientSlots(serviceId) {
         <div class="slots-date-group glass" style="padding: 12px; border-radius: 14px;">
           <div class="slots-date-label">${formatDate(date)}</div>
           <div class="slots-list">
-            <span style="color:var(--danger); font-size:14px; font-weight:600; padding: 10px 0;">🚫 ${t('day_off')}</span>
+            <span style="color:var(--danger); font-size:14px; font-weight:600; padding: 10px 0;"><i class="ph-light ph-calendar-x" style="margin-right:8px;"></i> ${t('day_off')}</span>
           </div>
         </div>
       `;
@@ -538,13 +561,19 @@ function doBooking() {
 
 // === КЛИЕНТ: МОИ ЗАПИСИ ===
 function showMyBookingsPage() {
+  const titleEl = document.querySelector('#page-my-bookings .top-bar-title');
+  const labelEl = document.querySelector('#btn-my-bookings .settings-item-label');
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  if (titleEl) titleEl.textContent = isAdmin ? t('all_bookings') : t('my_bookings');
+  if (labelEl) labelEl.textContent = isAdmin ? t('all_bookings') : t('my_bookings');
   showPage('my-bookings');
   renderMyBookings();
 }
 
 function renderMyBookings() {
   const container = document.getElementById('my-bookings-content');
-  const bookings = load('bookings', []).filter(b => b.userId === currentUser.id);
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const bookings = load('bookings', []).filter(b => isAdmin ? true : b.userId === currentUser.id);
   const services = load('services', []);
 
   if (bookings.length === 0) {
@@ -552,23 +581,25 @@ function renderMyBookings() {
     return;
   }
 
-  // Сортируем от ближайших записей к дальним
   bookings.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   let html = '<div class="service-list">';
   bookings.forEach(b => {
     const svc = services.find(s => s.id === b.serviceId) || {};
-    const name = svc.nameKey ? t(svc.nameKey) : (svc.name_ru || 'Услуга');
+    const serviceName = svc.nameKey ? t(svc.nameKey) : (svc.name_ru || 'Услуга');
     const dateFormatted = formatDate(b.date);
+    const phoneLink = b.userPhone ? `<a href="tel:${b.userPhone}" style="color:var(--accent-1); text-decoration: none;">${b.userPhone}</a>` : b.userPhone;
+    const userLabel = isAdmin ? `<div style="margin-top:8px; font-size:13px; color:var(--text-2);">${t('client')}: ${b.userName} · ${phoneLink}</div>` : '';
 
     html += `
       <div class="service-card glass">
         <div class="service-icon" style="font-size:32px;"><i class="ph-light ${svc.icon || 'ph-calendar'}"></i></div>
         <div class="service-info">
-          <div class="service-name">${name}</div>
-          <div class="service-desc" style="color:var(--text-1); font-weight:600; margin-top:4px;">${dateFormatted} — ${b.time}</div>
+          <div class="service-name">${serviceName}</div>
+          ${userLabel}
+          <div class="service-desc" style="color:var(--text-1); font-weight:600; margin-top:8px;">${dateFormatted} — ${b.time}</div>
           <div class="service-price" style="margin-top:8px;">
-            <span style="font-size:12px; color:var(--text-2);">Статус: </span>
+            <span style="font-size:12px; color:var(--text-2);">${currentLang === 'ru' ? 'Статус:' : 'Holat:'} </span>
             <span style="color:var(--success); font-weight:600;">${currentLang === 'ru' ? 'Подтверждено' : 'Tasdiqlangan'}</span>
           </div>
         </div>
@@ -643,7 +674,7 @@ function renderAdminDaySlots() {
   let html = `<div class="glass" style="padding:20px">
     <h3 style="margin-bottom:12px">${formatDate(selectedDate)}</h3>`;
   if (dayOff) {
-    html += `<p style="color:var(--danger);margin-bottom:12px">🚫 ${t('day_off')}</p>
+    html += `<p style="color:var(--danger);margin-bottom:12px"><i class="ph-light ph-calendar-x" style="margin-right:8px;"></i> ${t('day_off')}</p>
       <button class="btn btn-secondary btn-small" onclick="toggleDayOff()">${t('remove_day_off')}</button>`;
   } else {
     html += `<div class="slots-list" style="margin-bottom:16px">`;
@@ -924,6 +955,8 @@ function renderSettings() {
     <div class="profile-phone">${currentUser.phone}</div>
     <div class="profile-badge">${roleBadge}</div>
   `;
+  const bookingsLabel = document.querySelector('#btn-my-bookings .settings-item-label');
+  if (bookingsLabel) bookingsLabel.textContent = currentUser.role === 'admin' ? t('all_bookings') : t('my_bookings');
   document.getElementById('current-lang-label').textContent = currentLang === 'ru' ? t('lang_russian') : t('lang_uzbek');
 }
 

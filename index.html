@@ -139,10 +139,10 @@
     <!-- ========== ГЛАВНАЯ: СПИСОК УСЛУГ ========== -->
     <div id="page-home" class="page">
       <div class="top-bar">
-        <div>
-          <div class="top-bar-title" data-i18n="services">Услуги</div>
-        </div>
-        <div id="home-user-greeting" style="font-size:14px;color:var(--text-2)"></div>
+        <div class="top-bar-title" data-i18n="services">Услуги</div>
+        <button id="home-admin-add-btn" class="top-bar-back hidden" onclick="showAddServiceModal()" style="background:none;border:none;color:var(--text-1);cursor:pointer;">
+          <i class="ph-light ph-plus"></i>
+        </button>
       </div>
       <div class="page-content">
         <div id="services-grid" class="services-grid">
@@ -156,7 +156,7 @@
       <div class="top-bar">
         <button class="top-bar-back" id="service-back"><i class="ph-light ph-caret-left"></i></button>
         <div class="top-bar-title" id="service-title"></div>
-        <button class="top-bar-back hidden" id="service-admin-btn" onclick="showAddSlotModal()" style="background:none;border:none;color:var(--text-1);cursor:pointer;"><i class="ph-light ph-plus"></i></button>
+        <div style="width:40px"></div>
       </div>
       <div class="page-content">
         <div id="service-hero" class="service-hero glass"></div>

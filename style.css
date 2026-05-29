@@ -14,8 +14,8 @@
   --accent-1: #a855f7;
   --accent-2: #ec4899;
   --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
-  /* Фон — красивое фото зелёных листьев (как на вашем скриншоте) */
-  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop');
+  /* Фон — локальное изображение из папки проекта */
+  --bg-body: url('background.jpg');
 
   /* Эффект Liquid Glass */
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -39,23 +39,23 @@
 
 /* === ТЁМНАЯ ТЕМА === */
 [data-theme="dark"] {
-  /* Сильное затемнение, чтобы тёмная тема действительно отличалась от светлой */
-  --bg-body: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1080&auto=format&fit=crop');
-  --bg-overlay: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85));
+  /* Более мягкая тёмная тема — чтобы было видно фон и работа сохранила воздушность */
+  --bg-body: url('background.jpg');
+  --bg-overlay: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
 
-  --glass-bg: rgba(0, 0, 0, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-bg: rgba(20, 20, 20, 0.68);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
 
-  --text-1: #ffffff;
-  --text-2: rgba(255, 255, 255, 0.6);
-  --input-bg: rgba(0, 0, 0, 0.5);
-  --nav-bg: rgba(0, 0, 0, 0.5);
-  --overlay: rgba(0, 0, 0, 0.85);
+  --text-1: #f2f2f7;
+  --text-2: rgba(255, 255, 255, 0.72);
+  --input-bg: rgba(28, 28, 28, 0.82);
+  --nav-bg: rgba(28, 28, 28, 0.85);
+  --overlay: rgba(0, 0, 0, 0.45);
 
-  --blob-1: rgba(0, 0, 0, 0.3);
-  --blob-2: rgba(0, 0, 0, 0.3);
-  --blob-3: rgba(0, 0, 0, 0.3);
+  --blob-1: rgba(255, 255, 255, 0.04);
+  --blob-2: rgba(255, 255, 255, 0.04);
+  --blob-3: rgba(255, 255, 255, 0.03);
 }
 
 /* === СБРОС СТИЛЕЙ И ОСНОВА === */
@@ -117,7 +117,7 @@ body::before {
 
 /* Для темной темы добавляем оверлей */
 [data-theme="dark"] body::before {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), var(--bg-body);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45)), var(--bg-body);
 }
 
 /* === АНИМИРОВАННЫЙ ФОН (ЦВЕТНЫЕ ПЯТНА) ===
@@ -359,6 +359,24 @@ html, body, #app-main, .page, .page.active {
   resize: vertical;
 }
 
+.input-with-suffix {
+  position: relative;
+}
+
+.input-with-suffix input {
+  padding-right: 72px;
+}
+
+.input-with-suffix .input-suffix {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: var(--text-2);
+  font-size: 13px;
+  pointer-events: none;
+}
+
 /* --- Поле телефона с фиксированным префиксом +998 --- */
 .phone-input-wrapper {
   display: flex;
@@ -487,18 +505,20 @@ html, body, #app-main, .page, .page.active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  padding-top: max(16px, env(safe-area-inset-top));
+  box-sizing: border-box;
+  height: calc(54px + max(12px, env(safe-area-inset-top)));
+  padding: 0 14px;
+  padding-top: max(12px, env(safe-area-inset-top));
   background: var(--glass-bg);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-bottom: 1px solid var(--glass-border);
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
 }
 
 .top-bar-title {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -507,8 +527,8 @@ html, body, #app-main, .page, .page.active {
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 18px;
+  padding: 6px 10px;
+  font-size: 13px;
   cursor: pointer;
   color: var(--text-1);
   transition: all 0.2s;
@@ -547,16 +567,17 @@ html, body, #app-main, .page, .page.active {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding: 12px 20px 0 20px;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  height: calc(54px + max(8px, env(safe-area-inset-bottom)));
+  padding: 0 14px 0 14px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   background: var(--glass-bg);
   border-top: 1px solid var(--glass-border);
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
   z-index: 100;
-  height: auto;
   margin: 0;
 }
 
@@ -564,21 +585,21 @@ html, body, #app-main, .page, .page.active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   color: var(--text-2);
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 12px;
   transition: all 0.3s;
 }
 
 .nav-item .nav-icon {
-  font-size: 24px;
+  font-size: 19px;
   transition: transform 0.3s;
 }
 
@@ -821,6 +842,7 @@ html, body, #app-main, .page, .page.active {
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
