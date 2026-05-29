@@ -506,8 +506,8 @@ html, body, #app-main, .page, .page.active {
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  height: calc(54px + max(12px, env(safe-area-inset-top)));
-  padding: 0 14px;
+  height: calc(62px + max(12px, env(safe-area-inset-top)));
+  padding: 0 16px;
   padding-top: max(12px, env(safe-area-inset-top));
   background: var(--glass-bg);
   backdrop-filter: blur(4px);
@@ -526,9 +526,13 @@ html, body, #app-main, .page, .page.active {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 6px 10px;
-  font-size: 13px;
+  border-radius: 14px;
+  padding: 8px 14px;
+  font-size: 14px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   color: var(--text-1);
   transition: all 0.2s;
@@ -568,9 +572,9 @@ html, body, #app-main, .page, .page.active {
   display: flex;
   justify-content: space-around;
   box-sizing: border-box;
-  height: calc(54px + max(8px, env(safe-area-inset-bottom)));
-  padding: 0 14px 0 14px;
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  height: calc(62px + max(12px, env(safe-area-inset-bottom)));
+  padding: 0 16px 0 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   background: var(--glass-bg);
@@ -585,21 +589,23 @@ html, body, #app-main, .page, .page.active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  justify-content: center;
+  gap: 4px;
   background: none;
   border: none;
   color: var(--text-2);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
-  padding: 6px 14px;
-  border-radius: 12px;
+  padding: 8px 16px;
+  min-height: 42px;
+  border-radius: 14px;
   transition: all 0.3s;
 }
 
 .nav-item .nav-icon {
-  font-size: 19px;
+  font-size: 20px;
   transition: transform 0.3s;
 }
 
