@@ -212,6 +212,12 @@ body::before {
   overflow: hidden;
 }
 
+/* Гарантируем, что страницы и базовые элементы всегда занимают весь viewport
+   Используем 100dvh для корректной высоты на мобильных устройствах с вырезами */
+html, body, #app-main, .page, .page.active {
+  min-height: 100dvh;
+  min-height: 100vh;
+}
 /* === КОНТЕЙНЕР СТРАНИЦ === */
 .page {
   display: none;
@@ -226,6 +232,7 @@ body::before {
   flex-direction: column;
   animation: none;
   will-change: auto;
+  overflow-x: hidden;
 }
 
 .page.active {
@@ -520,13 +527,16 @@ body::before {
   overflow-y: auto;
   overflow-x: hidden;
   /* Запрещаем горизонтальный скролл */
-  padding: 80px 20px 80px;
-  /* Уменьшен отступ снизу */
+  padding: calc(96px + env(safe-area-inset-top, 0)) 20px calc(120px + env(safe-area-inset-bottom, 0));
+  /* Учитываем фиксированную шапку и нижнее меню */
+  scroll-padding-top: calc(96px + env(safe-area-inset-top, 0));
+  scroll-padding-bottom: calc(120px + env(safe-area-inset-bottom, 0));
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
   /* Предотвращает проблемы со скроллом на мобильных */
   position: relative;
-  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
 }
 
 /* === НИЖНЕЕ МЕНЮ (3 КНОПКИ) === */
