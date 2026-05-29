@@ -11,9 +11,9 @@
    Чтобы поменять цвета для другого салона,
    достаточно изменить значения только здесь */
 :root {
-  --accent-1: #a855f7;
+  --accent-1: #FDE8D3;
   --accent-2: #ec4899;
-  --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
+  --accent-gradient: linear-gradient(135deg, #FDE8D3, #99cdd8);
   /* Фон — локальное изображение из папки проекта */
   --bg-body: url('background.jpg');
 
@@ -29,7 +29,7 @@
   --nav-bg: rgba(255, 255, 255, 0.02);
   --overlay: rgba(0, 0, 0, 0.4);
   --success: #10b981;
-  --danger: #ff6b6b;
+  --danger: #ff9e9e;
 
   /* Пятна почти невидимые, чтобы не перекрывать фото */
   --blob-1: rgba(255, 255, 255, 0.02);
